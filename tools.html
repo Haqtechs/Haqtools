@@ -13,263 +13,686 @@
             box-sizing: border-box;
         }
         
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes confetti {
+            0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #e0f7fa, #80deea);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
             color: #333;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            transition: background 0.3s ease;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background Particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.3;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            animation: float 3s ease-in-out infinite;
         }
 
         /* ===== HEADER ===== */
         header {
             text-align: center;
-            padding: 1.5rem 1rem 1rem;
-            background: rgba(255, 255, 255, 0.3);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 2rem 1rem 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            z-index: 10;
+            animation: fadeInUp 0.6s ease;
         }
 
         header h1 {
-            font-size: 2rem;
-            margin-bottom: 0.2rem;
-            color: #00796b;
+            font-size: 2.5rem;
+            margin-bottom: 0.3rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+            letter-spacing: -1px;
         }
 
         .subtitle {
-            font-size: 0.9rem;
-            color: #004d40;
-            margin-bottom: 0.8rem;
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 1rem;
+            font-weight: 500;
         }
 
         .header-controls {
             display: flex;
             justify-content: center;
-            gap: 0.5rem;
+            gap: 0.7rem;
             flex-wrap: wrap;
+            position: relative;
         }
 
         .header-controls button {
-            background-color: #00796b;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border: none;
             color: white;
-            padding: 0.4rem 0.8rem;
-            border-radius: 12px;
+            padding: 0.6rem 1.2rem;
+            border-radius: 25px;
             cursor: pointer;
-            font-weight: bold;
-            font-size: 0.85rem;
-            transition: background-color 0.3s ease;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-controls button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .header-controls button:hover::before {
+            left: 100%;
         }
 
         .header-controls button:hover {
-            background-color: #004d40;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(102, 126, 234, 0.6);
         }
 
-        /* ===== SEARCH & FILTER BAR ===== */
-        .search-filter-bar {
-            max-width: 1100px;
-            margin: 1rem auto 0;
-            padding: 0 1rem;
-            width: 100%;
+        .header-controls button:active {
+            transform: translateY(0);
         }
 
-        .search-container {
-            position: relative;
-            margin-bottom: 0.8rem;
-        }
-
-        #toolSearch {
-            width: 100%;
-            padding: 0.7rem 1rem 0.7rem 2.5rem;
-            border: 2px solid #00796b;
-            border-radius: 12px;
-            font-size: 0.95rem;
-            background: rgba(255, 255, 255, 0.9);
-            transition: all 0.3s ease;
-        }
-
-        #toolSearch:focus {
-            outline: none;
-            box-shadow: 0 0 10px rgba(0, 121, 107, 0.3);
-        }
-
-        .search-icon {
-            position: absolute;
-            left: 0.8rem;
+        /* Hamburger Menu Button */
+        .hamburger-btn {
+            position: absolute !important;
+            right: 1rem;
             top: 50%;
             transform: translateY(-50%);
-            font-size: 1.1rem;
-            color: #00796b;
-        }
-
-        /* ===== MENU BAR / CATEGORY FILTER ===== */
-        .menu-bar {
-            display: flex;
-            gap: 0.4rem;
-            overflow-x: auto;
-            padding: 0.5rem 0;
-            margin-bottom: 0.8rem;
-            scrollbar-width: thin;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .menu-bar::-webkit-scrollbar {
-            height: 4px;
-        }
-
-        .menu-bar::-webkit-scrollbar-thumb {
-            background: #00796b;
-            border-radius: 3px;
-        }
-
-        .menu-item {
-            background: rgba(255, 255, 255, 0.7);
-            border: 2px solid #00796b;
-            color: #00796b;
-            padding: 0.5rem 0.9rem;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: 600;
-            white-space: nowrap;
-            transition: all 0.3s ease;
-            font-size: 0.85rem;
-            flex-shrink: 0;
-        }
-
-        .menu-item:hover {
-            background: #e0f7fa;
-            transform: translateY(-2px);
-        }
-
-        .menu-item.active {
-            background: #00796b;
-            color: white;
-        }
-
-        /* ===== MAIN CONTENT ===== */
-        main {
-            flex-grow: 1;
-            padding: 0.5rem 1rem 2rem;
-            max-width: 1100px;
-            margin: 0 auto;
-            width: 100%;
-        }
-
-        .section-header {
-            margin: 1rem 0 0.8rem;
-            color: #00796b;
-            font-size: 1.2rem;
+            background: rgba(255, 255, 255, 0.2) !important;
+            width: 45px;
+            height: 45px;
+            padding: 0 !important;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            justify-content: center;
+            border-radius: 12px !important;
         }
 
-        .tools-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 0.8rem;
-        }
-
-        .tool-card {
-            background: rgba(255, 255, 255, 0.7);
-            border-radius: 16px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            padding: 1rem;
-            text-align: center;
-            cursor: default;
+        .hamburger-icon {
             display: flex;
             flex-direction: column;
-            align-items: center;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            position: relative;
-            min-height: 180px;
+            gap: 4px;
         }
 
-        .tool-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        .hamburger-icon span {
+            width: 20px;
+            height: 2px;
+            background: white;
+            border-radius: 2px;
+            transition: all 0.3s ease;
         }
 
-        .tool-card.hidden {
-            display: none;
+        /* Hamburger Menu Panel */
+        .hamburger-menu {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 320px;
+            max-width: 85%;
+            height: 100vh;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            box-shadow: -5px 0 30px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            transition: right 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            overflow-y: auto;
         }
 
-        .favorite-btn {
-            position: absolute;
-            top: 0.5rem;
-            right: 0.5rem;
-            background: none;
-            border: none;
-            font-size: 1.3rem;
-            cursor: pointer;
-            transition: transform 0.2s ease;
-            padding: 0.2rem;
-            line-height: 1;
+        .hamburger-menu.active {
+            right: 0;
         }
 
-        .favorite-btn:hover {
-            transform: scale(1.2);
-        }
-
-        .favorite-btn.active {
-            color: #ffd700;
-        }
-
-        .tool-card img {
-            width: 60px;
-            height: 60px;
-            margin-bottom: 0.6rem;
-            filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.15));
-            transition: transform 0.3s ease;
-            object-fit: contain;
-        }
-
-        .tool-card:hover img {
-            transform: scale(1.1);
-        }
-
-        .tool-card h2 {
-            margin-bottom: 0.3rem;
-            color: #00695c;
-            font-size: 0.95rem;
-            line-height: 1.2;
-        }
-
-        .tool-category {
-            font-size: 0.7rem;
-            color: #666;
-            margin-bottom: 0.6rem;
-            font-weight: 500;
-        }
-
-        .open-tool-btn {
-            background-color: #004d40;
-            border: none;
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: background-color 0.3s ease;
-            margin-top: auto;
-            font-size: 0.85rem;
-            width: 100%;
-        }
-
-        .open-tool-btn:hover {
-            background-color: #00796b;
-        }
-
-        /* ===== MODAL ===== */
-        .modal {
+        .menu-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .menu-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .menu-header {
+            padding: 2rem 1.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .menu-header h2 {
+            font-size: 1.5rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .menu-header p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .menu-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .menu-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .menu-items {
+            padding: 1rem 0;
+        }
+
+        .menu-item-btn {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            border: none;
+            background: transparent;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #333;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .menu-item-btn:hover {
+            background: rgba(102, 126, 234, 0.1);
+            padding-left: 2rem;
+        }
+
+        .menu-item-btn .icon {
+            font-size: 1.3rem;
+        }
+
+        .menu-divider {
+            height: 1px;
+            background: rgba(0, 0, 0, 0.1);
+            margin: 0.5rem 1.5rem;
+        }
+
+        /* ===== PWA INSTALL BANNER ===== */
+        .install-banner {
+            position: fixed;
+            bottom: -200px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 500px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.2rem 1.5rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            z-index: 9999;
+            transition: bottom 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .install-banner.show {
+            bottom: 20px;
+        }
+
+        .install-banner-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .install-banner-icon {
+            font-size: 2.5rem;
+        }
+
+        .install-banner-text h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .install-banner-text p {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .install-banner-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .install-banner-buttons button {
+            flex: 1;
+            padding: 0.7rem 1rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .install-btn {
+            background: white;
+            color: #667eea;
+        }
+
+        .install-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
+        }
+
+        .dismiss-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .dismiss-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* ===== SEARCH & FILTER BAR ===== */
+        .search-filter-bar {
+            max-width: 1100px;
+            margin: 1.5rem auto 0;
+            padding: 0 1rem;
+            width: 100%;
+            position: relative;
+            z-index: 10;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .search-container {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        #toolSearch {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            color: white;
+        }
+
+        #toolSearch::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        #toolSearch:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 8px 30px rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* ===== MENU BAR ===== */
+        .menu-bar {
+            display: flex;
+            gap: 0.5rem;
+            overflow-x: auto;
+            padding: 0.7rem 0;
+            margin-bottom: 1rem;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255,255,255,0.3) transparent;
+        }
+
+        .menu-bar::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .menu-bar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+        }
+
+        .menu-item {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 0.7rem 1.3rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .menu-item .badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ff6b6b;
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-weight: 700;
+        }
+
+        .menu-item:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(255, 255, 255, 0.3);
+        }
+
+        .menu-item.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.5);
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        main {
+            flex-grow: 1;
+            padding: 1rem 1rem 2rem;
+            max-width: 1100px;
+            margin: 0 auto;
+            width: 100%;
+            position: relative;
+            z-index: 10;
+        }
+
+        .section-header {
+            margin: 1.5rem 0 1rem;
+            color: white;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            font-weight: 700;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            animation: fadeInUp 1s ease;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        /* ===== ULTRA BEAUTIFUL TOOL CARDS ===== */
+        .tool-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            padding: 1.3rem;
+            text-align: center;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            min-height: 200px;
+            overflow: hidden;
+            animation: fadeInUp 0.6s ease;
+            animation-fill-mode: both;
+        }
+
+        .tool-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: rotate(45deg);
+            transition: all 0.6s ease;
+        }
+
+        .tool-card:hover::before {
+            top: -100%;
+            left: -100%;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .tool-card:active {
+            transform: translateY(-8px) scale(0.98);
+        }
+
+        .tool-card.hidden {
+            display: none;
+        }
+
+        /* Staggered animation */
+        .tool-card:nth-child(1) { animation-delay: 0.1s; }
+        .tool-card:nth-child(2) { animation-delay: 0.2s; }
+        .tool-card:nth-child(3) { animation-delay: 0.3s; }
+        .tool-card:nth-child(4) { animation-delay: 0.4s; }
+        .tool-card:nth-child(5) { animation-delay: 0.5s; }
+        .tool-card:nth-child(6) { animation-delay: 0.6s; }
+
+        .favorite-btn {
+            position: absolute;
+            top: 0.7rem;
+            right: 0.7rem;
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+            border: none;
+            font-size: 1.4rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 0.3rem;
+            line-height: 1;
+            width: 35px;
+            height: 35px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+        }
+
+        .favorite-btn:hover {
+            transform: scale(1.2) rotate(15deg);
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .favorite-btn.active {
+            color: #ffd700;
+            background: rgba(255, 215, 0, 0.2);
+            animation: pulse 0.6s ease;
+        }
+
+        .tool-card img {
+            width: 70px;
+            height: 70px;
+            margin-bottom: 0.8rem;
+            filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.2));
+            transition: all 0.4s ease;
+            object-fit: contain;
+            z-index: 1;
+        }
+
+        .tool-card:hover img {
+            transform: scale(1.15) rotate(5deg);
+            filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.3));
+        }
+
+        .tool-card h2 {
+            margin-bottom: 0.4rem;
+            color: white;
+            font-size: 1rem;
+            line-height: 1.3;
+            font-weight: 700;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+
+        .tool-category {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 0.8rem;
+            font-weight: 500;
+            z-index: 1;
+        }
+
+        .open-tool-btn {
+            background: linear-gradient(135deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.1) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: auto;
+            font-size: 0.85rem;
+            width: 100%;
+            z-index: 1;
+        }
+
+        .open-tool-btn:hover {
+            background: linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.2) 100%);
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.3);
+        }
+
+        /* ===== MODAL - PREMIUM DESIGN ===== */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -282,46 +705,62 @@
             display: none;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
         .modal-content {
-            background: #fff;
-            border-radius: 20px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.98) 100%);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
             width: 100%;
             max-width: 700px;
             max-height: 90vh;
             overflow-y: auto;
-            padding: 2rem 1rem;
+            padding: 0;
             position: relative;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-            animation: slideUp 0.3s ease;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            border: 2px solid rgba(255, 255, 255, 0.5);
         }
 
-        @keyframes slideUp {
-            from { transform: translateY(50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 1.5rem 2rem;
+            border-radius: 28px 28px 0 0;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
         }
 
         .close-btn {
-            position: absolute;
-            top: 0.5rem;
-            right: 1rem;
-            background: none;
+            background: rgba(255, 255, 255, 0.2);
             border: none;
-            font-size: 2rem;
+            font-size: 1.8rem;
             font-weight: bold;
             cursor: pointer;
-            color: #333;
-            transition: color 0.3s ease, transform 0.2s ease;
-            z-index: 10;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
         }
 
         .close-btn:hover {
-            color: #00796b;
-            transform: rotate(90deg);
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg) scale(1.1);
+        }
+
+        #toolContainer {
+            padding: 2rem;
         }
 
         /* ===== SETTINGS MODAL ===== */
@@ -330,19 +769,27 @@
         }
 
         .setting-item {
-            padding: 1rem;
-            margin-bottom: 0.8rem;
-            background: rgba(0, 121, 107, 0.05);
-            border-radius: 12px;
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border-radius: 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .setting-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.2);
         }
 
         .setting-item h3 {
-            font-size: 1rem;
-            color: #00796b;
+            font-size: 1.05rem;
+            color: #667eea;
             margin-bottom: 0.3rem;
+            font-weight: 700;
         }
 
         .setting-item p {
@@ -351,147 +798,126 @@
         }
 
         .setting-item button {
-            padding: 0.5rem 1rem;
-            background: #00796b;
+            padding: 0.6rem 1.2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 12px;
             cursor: pointer;
             font-weight: 600;
-            transition: background 0.3s ease;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
         }
 
         .setting-item button:hover {
-            background: #004d40;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
         }
 
         .setting-item button.danger {
-            background: #d32f2f;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
         }
 
         .setting-item button.danger:hover {
-            background: #b71c1c;
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.5);
         }
 
         /* ===== FOOTER ===== */
         footer {
-            background: rgba(255, 255, 255, 0.3);
-            padding: 0.8rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            padding: 1rem;
             text-align: center;
-            color: #004d40;
+            color: white;
             font-weight: 600;
-            font-size: 0.8rem;
-            backdrop-filter: blur(10px);
-            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.7);
+            font-size: 0.85rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            z-index: 10;
         }
 
-        /* ===== TOAST NOTIFICATION ===== */
+        /* ===== TOAST ===== */
         .toast {
             position: fixed;
             bottom: 20px;
             right: 20px;
-            background: #00796b;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             padding: 1rem 1.5rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-            animation: slideIn 0.3s ease;
-            z-index: 1000;
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+            animation: slideInRight 0.4s ease;
+            z-index: 10000;
             max-width: 90%;
-            font-size: 0.9rem;
-        }
-
-        @keyframes slideIn {
-            from { transform: translateX(400px); }
-            to { transform: translateX(0); }
+            font-size: 0.95rem;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         /* ===== DARK MODE ===== */
         body.dark {
-            background: linear-gradient(135deg, #121212, #1e1e1e);
-            color: #ddd;
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            background-size: 400% 400%;
         }
 
         body.dark header {
-            background: rgba(18, 18, 18, 0.7);
-            box-shadow: 0 0 15px rgba(0, 121, 107, 0.7);
-        }
-
-        body.dark header h1,
-        body.dark .subtitle {
-            color: #4db6ac;
+            background: rgba(0, 0, 0, 0.3);
         }
 
         body.dark .tool-card {
-            background: rgba(25, 25, 25, 0.7);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.7);
-            color: #eee;
+            background: rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.1);
         }
 
-        body.dark .tool-card h2 {
-            color: #4db6ac;
-        }
-
-        body.dark .tool-category {
-            color: #999;
+        body.dark .tool-card:hover {
+            background: rgba(0, 0, 0, 0.4);
+            border-color: rgba(255, 255, 255, 0.2);
         }
 
         body.dark .menu-item {
-            background: rgba(25, 25, 25, 0.7);
-            color: #4db6ac;
-            border-color: #4db6ac;
-        }
-
-        body.dark .menu-item.active {
-            background: #00796b;
-            color: white;
+            background: rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.2);
         }
 
         body.dark #toolSearch {
-            background: rgba(25, 25, 25, 0.9);
-            color: #eee;
-            border-color: #4db6ac;
+            background: rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.2);
         }
 
         body.dark .modal-content {
-            background: #222;
-            color: #ddd;
-        }
-
-        body.dark .close-btn {
+            background: linear-gradient(135deg, rgba(30,30,30,0.98) 0%, rgba(40,40,40,0.98) 100%);
             color: #eee;
         }
 
-        body.dark footer {
-            background: rgba(18, 18, 18, 0.7);
-            color: #4db6ac;
+        body.dark .hamburger-menu {
+            background: rgba(30, 30, 30, 0.98);
         }
 
-        body.dark .setting-item {
-            background: rgba(77, 182, 172, 0.1);
+        body.dark .menu-item-btn {
+            color: #eee;
         }
 
-        body.dark .setting-item h3 {
-            color: #4db6ac;
+        body.dark .menu-item-btn:hover {
+            background: rgba(102, 126, 234, 0.2);
         }
 
-        body.dark .setting-item p {
-            color: #999;
-        }
-
-        /* ===== IMAGE EDITOR SPECIFIC STYLES ===== */
+        /* Image Editor & Tool Styles (keeping existing) */
         .upload-section {
             text-align: center;
-            padding: 2rem 1rem;
-            border: 3px dashed #00796b;
-            border-radius: 12px;
-            background: rgba(0, 121, 107, 0.05);
-            transition: background 0.3s ease;
+            padding: 2.5rem 1.5rem;
+            border: 3px dashed rgba(102, 126, 234, 0.5);
+            border-radius: 20px;
+            background: rgba(102, 126, 234, 0.05);
+            transition: all 0.3s ease;
             cursor: pointer;
         }
 
         .upload-section:hover {
-            background: rgba(0, 121, 107, 0.1);
+            background: rgba(102, 126, 234, 0.1);
+            border-color: rgba(102, 126, 234, 0.7);
+            transform: scale(1.02);
         }
 
         .canvas-container {
@@ -499,7 +925,7 @@
             max-height: 400px;
             overflow: auto;
             border: 2px solid #ddd;
-            border-radius: 8px;
+            border-radius: 15px;
             margin-bottom: 1rem;
             background: #f5f5f5;
             display: flex;
@@ -516,35 +942,38 @@
 
         .editor-tabs {
             display: flex;
-            gap: 0.3rem;
-            margin-bottom: 0.8rem;
+            gap: 0.4rem;
+            margin-bottom: 1rem;
             flex-wrap: wrap;
         }
 
         .tab-btn {
             flex: 1;
-            min-width: 70px;
-            padding: 0.5rem 0.8rem;
-            background: #e0e0e0;
-            border: none;
-            border-radius: 8px;
+            min-width: 80px;
+            padding: 0.7rem 1rem;
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-radius: 12px;
             cursor: pointer;
             font-weight: 600;
             transition: all 0.3s ease;
             font-size: 0.85rem;
+            color: #667eea;
         }
 
         .tab-btn.active {
-            background: #00796b;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
         }
 
         .tool-panel {
             display: none;
-            padding: 0.8rem;
-            background: rgba(0, 121, 107, 0.05);
-            border-radius: 8px;
-            margin-bottom: 0.8rem;
+            padding: 1rem;
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 15px;
+            margin-bottom: 1rem;
         }
 
         .tool-panel.active {
@@ -552,89 +981,93 @@
         }
 
         .tool-btn {
-            padding: 0.4rem 0.8rem;
-            margin: 0.2rem;
+            padding: 0.5rem 1rem;
+            margin: 0.3rem;
             background: white;
             border: 1px solid #ddd;
-            border-radius: 6px;
+            border-radius: 10px;
             cursor: pointer;
-            transition: all 0.2s ease;
-            font-size: 0.8rem;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
         }
 
         .tool-btn:hover {
-            background: #e0f7fa;
-            border-color: #00796b;
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+            transform: translateY(-2px);
         }
 
         .tool-btn.active {
-            background: #00796b;
+            background: #667eea;
             color: white;
-            border-color: #00796b;
+            border-color: #667eea;
         }
 
         .resize-controls {
             display: flex;
-            gap: 0.3rem;
-            margin-top: 0.5rem;
+            gap: 0.4rem;
+            margin-top: 0.7rem;
             flex-wrap: wrap;
         }
 
         .resize-controls input {
             flex: 1;
-            min-width: 70px;
-            padding: 0.4rem;
+            min-width: 80px;
+            padding: 0.5rem;
             border: 1px solid #ddd;
-            border-radius: 6px;
+            border-radius: 8px;
             font-size: 0.85rem;
         }
 
         .tool-panel label {
             display: block;
-            margin: 0.5rem 0;
+            margin: 0.7rem 0;
             font-weight: 600;
             font-size: 0.9rem;
         }
 
         .tool-panel input[type="range"] {
             width: 100%;
-            margin: 0.3rem 0;
+            margin: 0.5rem 0;
         }
 
         .tool-panel input[type="color"] {
-            width: 50px;
-            height: 35px;
+            width: 60px;
+            height: 40px;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
         }
 
         .action-buttons {
             display: flex;
-            gap: 0.4rem;
-            margin-top: 0.8rem;
+            gap: 0.5rem;
+            margin-top: 1rem;
             flex-wrap: wrap;
         }
 
         .action-buttons button {
             flex: 1;
-            padding: 0.6rem;
+            padding: 0.8rem;
             border: none;
-            border-radius: 8px;
+            border-radius: 12px;
             cursor: pointer;
             font-weight: 600;
             transition: all 0.3s ease;
             font-size: 0.85rem;
-            min-width: 80px;
+            min-width: 90px;
         }
 
         .primary-btn {
-            background: #00796b;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
         }
 
         .primary-btn:hover {
-            background: #004d40;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
         }
 
         #resetBtn, #newImageBtn {
@@ -643,97 +1076,69 @@
 
         #resetBtn:hover, #newImageBtn:hover {
             background: #bdbdbd;
+            transform: translateY(-2px);
         }
 
-        /* Dark mode for editor */
-        body.dark .canvas-container {
-            background: #1e1e1e;
-            border-color: #444;
-        }
-
-        body.dark .tool-btn {
-            background: #2a2a2a;
-            border-color: #444;
-            color: #eee;
-        }
-
-        body.dark .tab-btn {
-            background: #2a2a2a;
-            color: #eee;
-        }
-
-        body.dark .resize-controls input {
-            background: #2a2a2a;
-            color: #eee;
-            border-color: #444;
-        }
-
-        body.dark .upload-section {
-            border-color: #4db6ac;
-            background: rgba(77, 182, 172, 0.1);
-        }
-
-        /* Tool-specific styles */
+        /* Calculator */
         .calc-buttons {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
+            gap: 10px;
         }
 
         .calc-buttons button {
-            padding: 0.8rem;
-            font-size: 1.1rem;
-            background: #fff;
+            padding: 1rem;
+            font-size: 1.2rem;
+            background: white;
             border: 1px solid #ddd;
-            border-radius: 8px;
+            border-radius: 12px;
             cursor: pointer;
             transition: all 0.2s ease;
+            font-weight: 600;
         }
 
         .calc-buttons button:hover {
-            background: #e0f7fa;
+            background: #667eea;
+            color: white;
+            transform: scale(1.05);
         }
 
         .calc-buttons button:active {
             transform: scale(0.95);
         }
 
-        body.dark .calc-buttons button {
-            background: #2a2a2a;
-            border-color: #444;
-            color: #eee;
-        }
-
         #clearCalc {
-            background: #00796b !important;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
             color: #fff !important;
         }
 
-        /* Pomodoro Timer Styles */
+        /* Pomodoro Timer */
         .pomodoro-container {
             text-align: center;
         }
 
         .timer-display {
-            font-size: 3rem;
+            font-size: 3.5rem;
             font-weight: bold;
-            color: #00796b;
-            margin: 1.5rem 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 2rem 0;
             font-family: monospace;
         }
 
         .timer-controls {
             display: flex;
-            gap: 0.5rem;
+            gap: 0.7rem;
             justify-content: center;
             flex-wrap: wrap;
         }
 
         .timer-controls button {
-            padding: 0.6rem 1.2rem;
-            font-size: 0.9rem;
+            padding: 0.8rem 1.5rem;
+            font-size: 0.95rem;
             border: none;
-            border-radius: 8px;
+            border-radius: 12px;
             cursor: pointer;
             font-weight: 600;
             transition: all 0.3s ease;
@@ -741,74 +1146,88 @@
 
         .timer-mode {
             display: flex;
-            gap: 0.3rem;
+            gap: 0.5rem;
             justify-content: center;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
             flex-wrap: wrap;
         }
 
         .mode-btn {
-            padding: 0.4rem 0.8rem;
-            background: #e0e0e0;
-            border: none;
-            border-radius: 8px;
+            padding: 0.6rem 1rem;
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            border-radius: 12px;
             cursor: pointer;
             transition: all 0.3s ease;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
+            color: #667eea;
+            font-weight: 600;
         }
 
         .mode-btn.active {
-            background: #00796b;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
+            border-color: transparent;
         }
 
-        /* Unit Converter Styles */
+        /* Unit Converter */
         .converter-section {
-            margin: 0.8rem 0;
+            margin: 1rem 0;
         }
 
         .converter-section select,
         .converter-section input {
             width: 100%;
-            padding: 0.7rem;
-            margin: 0.4rem 0;
+            padding: 0.8rem;
+            margin: 0.5rem 0;
             border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 0.9rem;
-        }
-
-        body.dark .converter-section select,
-        body.dark .converter-section input {
-            background: #2a2a2a;
-            color: #eee;
-            border-color: #444;
+            border-radius: 12px;
+            font-size: 0.95rem;
         }
 
         /* Empty state */
         .empty-state {
             text-align: center;
-            padding: 3rem 1rem;
-            color: #666;
+            padding: 4rem 1rem;
+            color: white;
+            animation: fadeInUp 0.6s ease;
         }
 
         .empty-state h3 {
-            font-size: 1.3rem;
-            margin-bottom: 0.5rem;
+            font-size: 1.8rem;
+            margin-bottom: 0.7rem;
+            font-weight: 700;
         }
 
-        /* Responsive Design */
+        .empty-state p {
+            font-size: 1.1rem;
+            opacity: 0.8;
+        }
+
+        /* Confetti */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #f0f;
+            position: fixed;
+            animation: confetti 3s ease-out forwards;
+            z-index: 10000;
+        }
+
+        /* Responsive */
         @media (max-width: 360px) {
             .tools-grid {
                 grid-template-columns: 1fr;
             }
             
             .tool-card {
-                min-height: 160px;
+                min-height: 180px;
             }
             
             .tool-card img {
-                width: 50px;
-                height: 50px;
+                width: 60px;
+                height: 60px;
             }
         }
 
@@ -818,7 +1237,7 @@
             }
             
             header h1 {
-                font-size: 2.5rem;
+                font-size: 3rem;
             }
         }
 
@@ -827,10 +1246,114 @@
                 grid-template-columns: repeat(4, 1fr);
             }
         }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        }
     </style>
 </head>
 <body>
+    <!-- Animated Background Particles -->
+    <div class="particles" id="particles"></div>
+
+    <!-- PWA Install Banner -->
+    <div class="install-banner" id="installBanner">
+        <div class="install-banner-content">
+            <div class="install-banner-icon">📱</div>
+            <div class="install-banner-text">
+                <h3>Install HAQ Utility</h3>
+                <p>⚡ Faster • 📴 Works Offline • 🎯 Easy Access</p>
+            </div>
+        </div>
+        <div class="install-banner-buttons">
+            <button class="install-btn" id="installBtn">Install Now</button>
+            <button class="dismiss-btn" id="dismissInstall">Maybe Later</button>
+        </div>
+    </div>
+
+    <!-- Menu Overlay -->
+    <div class="menu-overlay" id="menuOverlay"></div>
+
+    <!-- Hamburger Menu -->
+    <div class="hamburger-menu" id="hamburgerMenu">
+        <div class="menu-header">
+            <button class="menu-close" id="menuClose">×</button>
+            <h2>Menu</h2>
+            <p>HAQ Utility v2.0</p>
+        </div>
+        <div class="menu-items">
+            <button class="menu-item-btn" id="menuAbout">
+                <span class="icon">ℹ️</span>
+                <span>About HAQ Utility</span>
+            </button>
+            <button class="menu-item-btn" id="menuShare">
+                <span class="icon">🔗</span>
+                <span>Share App</span>
+            </button>
+            <button class="menu-item-btn" id="menuKeyboard">
+                <span class="icon">⌨️</span>
+                <span>Keyboard Shortcuts</span>
+            </button>
+            <div class="menu-divider"></div>
+            <button class="menu-item-btn" id="menuTheme">
+                <span class="icon">🎨</span>
+                <span>Change Theme</span>
+            </button>
+            <button class="menu-item-btn" id="menuStats">
+                <span class="icon">📊</span>
+                <span>Usage Statistics</span>
+            </button>
+            <button class="menu-item-btn" id="menuAchievements">
+                <span class="icon">🏆</span>
+                <span>Achievements</span>
+            </button>
+            <div class="menu-divider"></div>
+            <button class="menu-item-btn" id="menuExport">
+                <span class="icon">💾</span>
+                <span>Export Settings</span>
+            </button>
+            <button class="menu-item-btn" id="menuImport">
+                <span class="icon">📁</span>
+                <span>Import Settings</span>
+            </button>
+            <div class="menu-divider"></div>
+            <button class="menu-item-btn" id="menuHelp">
+                <span class="icon">❓</span>
+                <span>Help & Tutorial</span>
+            </button>
+            <button class="menu-item-btn" id="menuFeedback">
+                <span class="icon">📝</span>
+                <span>Send Feedback</span>
+            </button>
+            <button class="menu-item-btn" id="menuDeveloper">
+                <span class="icon">👨‍💻</span>
+                <span>Developer Info</span>
+            </button>
+        </div>
+    </div>
+
     <header>
+        <button class="header-controls hamburger-btn" id="hamburgerBtn">
+            <div class="hamburger-icon">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </button>
         <h1>HAQ Utility</h1>
         <p class="subtitle">All-in-One Handy Tools by Abdulhaq</p>
         <div class="header-controls">
@@ -839,7 +1362,6 @@
         </div>
     </header>
 
-    <!-- Search & Filter Bar -->
     <div class="search-filter-bar">
         <div class="search-container">
             <span class="search-icon">🔍</span>
@@ -847,8 +1369,14 @@
         </div>
         
         <nav class="menu-bar">
-            <button class="menu-item active" data-category="all">All Tools</button>
-            <button class="menu-item" data-category="favorites">⭐ Favorites</button>
+            <button class="menu-item active" data-category="all">
+                All Tools
+                <span class="badge" id="badgeAll">20</span>
+            </button>
+            <button class="menu-item" data-category="favorites">
+                ⭐ Favorites
+                <span class="badge" id="badgeFav">0</span>
+            </button>
             <button class="menu-item" data-category="recent">🕐 Recent</button>
             <button class="menu-item" data-category="generators">🎲 Generators</button>
             <button class="menu-item" data-category="calculators">🔢 Calculators</button>
@@ -859,15 +1387,12 @@
     </div>
 
     <main>
-        <!-- Recently Used Tools -->
         <div id="recentSection" style="display:none;">
             <h3 class="section-header">🕐 Recently Used</h3>
             <div class="tools-grid" id="recentTools"></div>
         </div>
 
-        <!-- All Tools -->
         <section class="tools-grid" id="allTools">
-            <!-- Generators -->
             <div class="tool-card" data-tool="passwordGenerator" data-category="generators">
                 <button class="favorite-btn" data-fav="passwordGenerator">☆</button>
                 <img src="file_000000008cb061f79ce38a3934da11e3.png" alt="Password Generator" />
@@ -908,7 +1433,6 @@
                 <button class="open-tool-btn">Open Tool</button>
             </div>
 
-            <!-- Calculators -->
             <div class="tool-card" data-tool="calculator" data-category="calculators">
                 <button class="favorite-btn" data-fav="calculator">☆</button>
                 <img src="file_00000000db9461fd8e00cef01f0f1f38.png" alt="Calculator" />
@@ -941,7 +1465,6 @@
                 <button class="open-tool-btn">Open Tool</button>
             </div>
 
-            <!-- Converters -->
             <div class="tool-card" data-tool="unitConverter" data-category="converters">
                 <button class="favorite-btn" data-fav="unitConverter">☆</button>
                 <img src="uc.jpg" alt="Unit Converter" />
@@ -966,11 +1489,9 @@
                 <button class="open-tool-btn">Open Tool</button>
             </div>
 
-            <!-- Text Tools -->
             <div class="tool-card" data-tool="wordCounter" data-category="text">
                 <button class="favorite-btn" data-fav="wordCounter">☆</button>
-                <img src=
-                "wc.jpg" alt="Word Counter" />
+                <img src="wc.jpg" alt="Word Counter" />
                 <h2>Word Counter</h2>
                 <p class="tool-category">Text Tool</p>
                 <button class="open-tool-btn">Open Tool</button>
@@ -992,7 +1513,6 @@
                 <button class="open-tool-btn">Open Tool</button>
             </div>
 
-            <!-- Utilities -->
             <div class="tool-card" data-tool="notepad" data-category="utilities">
                 <button class="favorite-btn" data-fav="notepad">☆</button>
                 <img src="file_00000000a5d861f7865ea63abe0d8d5a.png" alt="NotePad" />
@@ -1026,65 +1546,69 @@
             </div>
         </section>
 
-        <!-- Empty State -->
         <div class="empty-state" id="emptyState" style="display:none;">
-            <h3>No tools found</h3>
+            <h3>🔍 No tools found</h3>
             <p>Try a different search or category</p>
         </div>
     </main>
 
-    <!-- Modal for tools -->
     <div id="toolModal" class="modal hidden">
         <div class="modal-content">
-            <button class="close-btn" title="Close">&times;</button>
+            <div class="modal-header">
+                <div class="modal-title" id="modalTitle">Tool</div>
+                <button class="close-btn" title="Close">×</button>
+            </div>
             <div id="toolContainer"></div>
         </div>
     </div>
 
-    <!-- Settings Modal -->
     <div id="settingsModal" class="modal hidden">
         <div class="modal-content">
-            <button class="close-btn" id="closeSettings" title="Close">&times;</button>
-            <h2 style="margin-bottom:1.5rem;">⚙️ Settings</h2>
-            <div class="settings-content">
-                <div class="setting-item">
-                    <div>
-                        <h3>Dark Mode</h3>
-                        <p>Toggle dark/light theme</p>
+            <div class="modal-header">
+                <div class="modal-title">⚙️ Settings</div>
+                <button class="close-btn" id="closeSettings">×</button>
+            </div>
+            <div id="toolContainer2" style="padding: 2rem;">
+                <div class="settings-content">
+                    <div class="setting-item">
+                        <div>
+                            <h3>Dark Mode</h3>
+                            <p>Toggle dark/light theme</p>
+                        </div>
+                        <button id="settingsDarkMode">Toggle</button>
                     </div>
-                    <button id="settingsDarkMode">Toggle</button>
-                </div>
-                
-                <div class="setting-item">
-                    <div>
-                        <h3>Clear All Favorites</h3>
-                        <p>Remove all favorited tools</p>
+                    
+                    <div class="setting-item">
+                        <div>
+                            <h3>Clear All Favorites</h3>
+                            <p>Remove all favorited tools</p>
+                        </div>
+                        <button id="clearFavorites" class="danger">Clear</button>
                     </div>
-                    <button id="clearFavorites" class="danger">Clear</button>
-                </div>
-                
-                <div class="setting-item">
-                    <div>
-                        <h3>Clear Recent History</h3>
-                        <p>Remove recently used tools</p>
+                    
+                    <div class="setting-item">
+                        <div>
+                            <h3>Clear Recent History</h3>
+                            <p>Remove recently used tools</p>
+                        </div>
+                        <button id="clearRecent" class="danger">Clear</button>
                     </div>
-                    <button id="clearRecent" class="danger">Clear</button>
-                </div>
-                
-                <div class="setting-item">
-                    <div>
-                        <h3>Clear All Data</h3>
-                        <p>Reset app to defaults (Notes, Favorites, Recent)</p>
+                    
+                    <div class="setting-item">
+                        <div>
+                            <h3>Clear All Data</h3>
+                            <p>Reset app to defaults</p>
+                        </div>
+                        <button id="clearAllData" class="danger">Clear All</button>
                     </div>
-                    <button id="clearAllData" class="danger">Clear All</button>
-                </div>
-                
-                <div class="setting-item" style="flex-direction:column; align-items:flex-start;">
-                    <div>
-                        <h3>About HAQ Utility</h3>
-                        <p style="margin-top:0.5rem;">Version: 2.0</p>
-                        <p>Created by: Abdulhaq Abdul Ganiy</p>
-                        <p>Total Tools: <span id="settingsToolCount">20</span></p>
+                    
+                    <div class="setting-item" style="flex-direction:column; align-items:flex-start;">
+                        <div>
+                            <h3>About HAQ Utility</h3>
+                            <p style="margin-top:0.5rem;">Version: 2.0 Ultra</p>
+                            <p>Created by: Abdulhaq Abdul Ganiy</p>
+                            <p>Total Tools: <span id="settingsToolCount">20</span></p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1096,7 +1620,237 @@
     </footer>
 
     <script>
-        // ===== TOOLS CONFIGURATION ===== 
+        // ===== PARTICLES ANIMATION =====
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                particle.style.animationDelay = Math.random() * 2 + 's';
+                container.appendChild(particle);
+            }
+        }
+        createParticles();
+
+        // ===== PWA INSTALL PROMPT =====
+        let deferredPrompt;
+        const installBanner = document.getElementById('installBanner');
+        const installBtn = document.getElementById('installBtn');
+        const dismissInstall = document.getElementById('dismissInstall');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            
+            // Check if user dismissed before
+            if (!localStorage.getItem('installDismissed')) {
+                setTimeout(() => {
+                    installBanner.classList.add('show');
+                }, 3000);
+            }
+        });
+
+        installBtn.addEventListener('click', async () => {
+            if (!deferredPrompt) {
+                showToast('App already installed or not available');
+                return;
+            }
+            
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            
+            if (outcome === 'accepted') {
+                showToast('Thanks for installing HAQ Utility! 🎉');
+                createConfetti();
+            }
+            
+            deferredPrompt = null;
+            installBanner.classList.remove('show');
+        });
+
+        dismissInstall.addEventListener('click', () => {
+            installBanner.classList.remove('show');
+            localStorage.setItem('installDismissed', 'true');
+        });
+
+        // ===== HAMBURGER MENU =====
+        const hamburgerBtn = document.getElementById('hamburgerBtn');
+        const hamburgerMenu = document.getElementById('hamburgerMenu');
+        const menuOverlay = document.getElementById('menuOverlay');
+        const menuClose = document.getElementById('menuClose');
+
+        function openMenu() {
+            hamburgerMenu.classList.add('active');
+            menuOverlay.classList.add('active');
+        }
+
+        function closeMenu() {
+            hamburgerMenu.classList.remove('active');
+            menuOverlay.classList.remove('active');
+        }
+
+        hamburgerBtn.addEventListener('click', openMenu);
+        menuClose.addEventListener('click', closeMenu);
+        menuOverlay.addEventListener('click', closeMenu);
+
+        // Menu item handlers
+        document.getElementById('menuAbout').addEventListener('click', () => {
+            closeMenu();
+            showToast('HAQ Utility v2.0 Ultra - Your All-in-One Toolkit!');
+        });
+
+        document.getElementById('menuShare').addEventListener('click', async () => {
+            closeMenu();
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: 'HAQ Utility',
+                        text: 'Check out this amazing all-in-one utility app!',
+                        url: window.location.href
+                    });
+                } catch (err) {
+                    console.log('Share cancelled');
+                }
+            } else {
+                navigator.clipboard.writeText(window.location.href);
+                showToast('Link copied to clipboard!');
+            }
+        });
+
+        document.getElementById('menuKeyboard').addEventListener('click', () => {
+            closeMenu();
+            alert('Keyboard Shortcuts:\n\nCtrl+K - Search\nEsc - Close Modal\nCtrl+1-9 - Quick Launch Tools');
+        });
+
+        document.getElementById('menuTheme').addEventListener('click', () => {
+            closeMenu();
+            document.getElementById('darkModeToggle').click();
+        });
+
+        document.getElementById('menuStats').addEventListener('click', () => {
+            closeMenu();
+            const totalUses = parseInt(localStorage.getItem('totalToolUses') || '0');
+            const mostUsed = localStorage.getItem('mostUsedTool') || 'None';
+            showToast(`Total Uses: ${totalUses} | Most Used: ${mostUsed}`);
+        });
+
+        document.getElementById('menuAchievements').addEventListener('click', () => {
+            closeMenu();
+            const achievements = checkAchievements();
+            alert(`🏆 Achievements\n\n${achievements.join('\n')}`);
+        });
+
+        document.getElementById('menuExport').addEventListener('click', () => {
+            closeMenu();
+            const data = {
+                favorites: localStorage.getItem('haqFavorites'),
+                recent: localStorage.getItem('haqRecent'),
+                darkMode: localStorage.getItem('haqUtilityDarkMode'),
+                notes: localStorage.getItem('haqutility_notes')
+            };
+            const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'haq-utility-backup.json';
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('Settings exported! 💾');
+        });
+
+        document.getElementById('menuImport').addEventListener('click', () => {
+            closeMenu();
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    try {
+                        const data = JSON.parse(event.target.result);
+                        Object.keys(data).forEach(key => {
+                            if (data[key]) localStorage.setItem(key === 'favorites' ? 'haqFavorites' : key === 'recent' ? 'haqRecent' : key === 'darkMode' ? 'haqUtilityDarkMode' : 'haqutility_notes', data[key]);
+                        });
+                        showToast('Settings imported! Refreshing...');
+                        setTimeout(() => location.reload(), 1000);
+                    } catch (err) {
+                        showToast('Invalid backup file!');
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        });
+
+        document.getElementById('menuHelp').addEventListener('click', () => {
+            closeMenu();
+            alert('HAQ Utility Help\n\n1. Browse or search for tools\n2. Click to open any tool\n3. Star your favorites\n4. Use keyboard shortcuts for faster access\n\nFor more help, contact the developer!');
+        });
+
+        document.getElementById('menuFeedback').addEventListener('click', () => {
+            closeMenu();
+            const feedback = prompt('Send us your feedback:');
+            if (feedback) {
+                showToast('Thank you for your feedback! 💙');
+            }
+        });
+
+        document.getElementById('menuDeveloper').addEventListener('click', () => {
+            closeMenu();
+            alert('👨‍💻 Developer Info\n\nCreated by: Abdulhaq Abdul Ganiy\nVersion: 2.0 Ultra\nBuilt with: ❤️ and ☕');
+        });
+
+        // ===== CONFETTI EFFECT =====
+        function createConfetti() {
+            const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#f9ca24', '#f0932b', '#eb4d4b', '#6c5ce7', '#a29bfe'];
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                document.body.appendChild(confetti);
+                setTimeout(() => confetti.remove(), 4000);
+            }
+        }
+
+        // ===== ACHIEVEMENTS SYSTEM =====
+        function checkAchievements() {
+            const achievements = [];
+            const totalUses = parseInt(localStorage.getItem('totalToolUses') || '0');
+            const favorites = JSON.parse(localStorage.getItem('haqFavorites') || '[]');
+            
+            if (totalUses >= 10) achievements.push('✅ Novice - Used 10 tools');
+            if (totalUses >= 50) achievements.push('✅ Power User - Used 50 tools');
+            if (totalUses >= 100) achievements.push('✅ Master - Used 100 tools');
+            if (favorites.length >= 5) achievements.push('✅ Favorite Hunter - 5+ favorites');
+            if (localStorage.getItem('haqUtilityDarkMode') === 'true') achievements.push('✅ Night Owl - Using dark mode');
+            
+            if (achievements.length === 0) achievements.push('🔒 Keep using the app to unlock achievements!');
+            
+            return achievements;
+        }
+
+        // Track tool usage
+        function trackToolUse(toolName) {
+            const totalUses = parseInt(localStorage.getItem('totalToolUses') || '0') + 1;
+            localStorage.setItem('totalToolUses', totalUses);
+            localStorage.setItem('mostUsedTool', toolName);
+            
+            // Check for achievements
+            if (totalUses === 10 || totalUses === 50 || totalUses === 100) {
+                createConfetti();
+                showToast(`🏆 Achievement Unlocked! Check the menu.`);
+            }
+        }
+
+   
+               // ===== TOOLS CONFIGURATION ===== 
         const tools = {
             passwordGenerator: {
                 render: (container) => {
@@ -2727,6 +3481,7 @@
                 }
             }
         };
+        
 
         // ===== APP INITIALIZATION =====
         document.addEventListener('DOMContentLoaded', () => {
@@ -2745,6 +3500,13 @@
 
             let favorites = JSON.parse(localStorage.getItem('haqFavorites') || '[]');
             let recentlyUsed = JSON.parse(localStorage.getItem('haqRecent') || '[]');
+            let currentCategory = 'all';
+
+            // Update badge counts
+            function updateBadges() {
+                document.getElementById('badgeAll').textContent = document.querySelectorAll('.tool-card').length;
+                document.getElementById('badgeFav').textContent = favorites.length;
+            }
 
             function updateFavorites() {
                 document.querySelectorAll('.favorite-btn').forEach(btn => {
@@ -2757,6 +3519,7 @@
                         btn.textContent = '☆';
                     }
                 });
+                updateBadges();
             }
 
             document.querySelectorAll('.favorite-btn').forEach(btn => {
@@ -2772,15 +3535,21 @@
                         favorites.push(toolName);
                         btn.classList.add('active');
                         btn.textContent = '⭐';
+                        createConfetti();
                     }
                     
                     localStorage.setItem('haqFavorites', JSON.stringify(favorites));
                     showToast(favorites.includes(toolName) ? 'Added to favorites!' : 'Removed from favorites');
+                    updateBadges();
                 });
             });
 
             function openTool(name) {
-                toolContainer.innerHTML = '<p>Loading tool...</p>';
+                trackToolUse(name);
+                
+                toolContainer.innerHTML = '<p style="text-align:center;padding:2rem;">Loading tool...</p>';
+                document.getElementById('modalTitle').textContent = name.replace(/([A-Z])/g, ' $1').trim();
+                
                 if(tools[name]) {
                     tools[name].render(toolContainer);
                     
@@ -2790,13 +3559,13 @@
                     localStorage.setItem('haqRecent', JSON.stringify(recentlyUsed));
                     updateRecentTools();
                 } else {
-                    toolContainer.innerHTML = '<p>Tool not found.</p>';
+                    toolContainer.innerHTML = '<p style="text-align:center;padding:2rem;">Tool not found.</p>';
                 }
                 toolModal.classList.remove('hidden');
             }
 
             function updateRecentTools() {
-                if (recentlyUsed.length > 0) {
+                if (recentlyUsed.length > 0 && currentCategory === 'all') {
                     recentSection.style.display = 'block';
                     recentTools.innerHTML = '';
                     
@@ -2855,7 +3624,6 @@
                 }
             });
 
-            // Settings Modal
             settingsBtn.addEventListener('click', () => {
                 settingsModal.classList.remove('hidden');
                 document.getElementById('settingsToolCount').textContent = document.querySelectorAll('.tool-card').length;
@@ -2894,7 +3662,7 @@
             });
 
             document.getElementById('clearAllData').addEventListener('click', () => {
-                if (confirm('Clear ALL data (Notes, Favorites, Recent)? This cannot be undone!')) {
+                if (confirm('Clear ALL data? This cannot be undone!')) {
                     localStorage.clear();
                     favorites = [];
                     recentlyUsed = [];
@@ -2905,8 +3673,18 @@
                 }
             });
 
+            // Search with category reset
             toolSearch.addEventListener('input', () => {
                 const query = toolSearch.value.toLowerCase();
+                
+                // Clear search resets to "All Tools"
+                if (query === '') {
+                    document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+                    document.querySelector('[data-category="all"]').classList.add('active');
+                    currentCategory = 'all';
+                    updateRecentTools();
+                }
+                
                 let visibleCount = 0;
 
                 document.querySelectorAll('#allTools .tool-card').forEach(card => {
@@ -2926,11 +3704,25 @@
 
             document.querySelectorAll('.menu-item').forEach(item => {
                 item.addEventListener('click', () => {
+                    // Clear search when changing categories
+                    toolSearch.value = '';
+                    
                     document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
                     item.classList.add('active');
                     
                     const category = item.dataset.category;
+                    currentCategory = category;
                     let visibleCount = 0;
+
+                    // Hide recent section when not on "all"
+                    if (category !== 'all') {
+                        recentSection.style.display = 'none';
+                    } else {
+                        updateRecentTools();
+                    }
+
+                    // Smooth scroll to top
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
 
                     if (category === 'all') {
                         document.querySelectorAll('#allTools .tool-card').forEach(card => {
@@ -2985,13 +3777,14 @@
             }
 
             document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && !toolModal.classList.contains('hidden')) {
-                    toolModal.classList.add('hidden');
-                    toolContainer.innerHTML = '';
-                }
-                
-                if (e.key === 'Escape' && !settingsModal.classList.contains('hidden')) {
-                    settingsModal.classList.add('hidden');
+                if (e.key === 'Escape') {
+                    if (!toolModal.classList.contains('hidden')) {
+                        toolModal.classList.add('hidden');
+                        toolContainer.innerHTML = '';
+                    }
+                    if (!settingsModal.classList.contains('hidden')) {
+                        settingsModal.classList.add('hidden');
+                    }
                 }
                 
                 if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
@@ -3002,6 +3795,7 @@
 
             updateFavorites();
             updateRecentTools();
+            updateBadges();
 
             const toolCount = document.getElementById('toolCount');
             toolCount.textContent = document.querySelectorAll('.tool-card').length;
@@ -3020,10 +3814,9 @@
 
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('service-worker.js')
-                .then(() => console.log('HAQ Utility PWA: Service Worker registered.'))
-                .catch(err => console.error('SW registration failed:', err));
+                .then(() => console.log('HAQ Utility PWA registered'))
+                .catch(err => console.error('SW failed:', err));
         }
     </script>
 </body>
 </html>
-
