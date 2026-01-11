@@ -1,0 +1,3029 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>HAQ Utility - All-in-One Tools</title>
+    <link rel="manifest" href="manifest.json" />
+    <style>
+        /* ===== RESET & BASE STYLES ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e0f7fa, #80deea);
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: background 0.3s ease;
+        }
+
+        /* ===== HEADER ===== */
+        header {
+            text-align: center;
+            padding: 1.5rem 1rem 1rem;
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.2rem;
+            color: #00796b;
+        }
+
+        .subtitle {
+            font-size: 0.9rem;
+            color: #004d40;
+            margin-bottom: 0.8rem;
+        }
+
+        .header-controls {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .header-controls button {
+            background-color: #00796b;
+            border: none;
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.85rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .header-controls button:hover {
+            background-color: #004d40;
+        }
+
+        /* ===== SEARCH & FILTER BAR ===== */
+        .search-filter-bar {
+            max-width: 1100px;
+            margin: 1rem auto 0;
+            padding: 0 1rem;
+            width: 100%;
+        }
+
+        .search-container {
+            position: relative;
+            margin-bottom: 0.8rem;
+        }
+
+        #toolSearch {
+            width: 100%;
+            padding: 0.7rem 1rem 0.7rem 2.5rem;
+            border: 2px solid #00796b;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            background: rgba(255, 255, 255, 0.9);
+            transition: all 0.3s ease;
+        }
+
+        #toolSearch:focus {
+            outline: none;
+            box-shadow: 0 0 10px rgba(0, 121, 107, 0.3);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.8rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.1rem;
+            color: #00796b;
+        }
+
+        /* ===== MENU BAR / CATEGORY FILTER ===== */
+        .menu-bar {
+            display: flex;
+            gap: 0.4rem;
+            overflow-x: auto;
+            padding: 0.5rem 0;
+            margin-bottom: 0.8rem;
+            scrollbar-width: thin;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .menu-bar::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .menu-bar::-webkit-scrollbar-thumb {
+            background: #00796b;
+            border-radius: 3px;
+        }
+
+        .menu-item {
+            background: rgba(255, 255, 255, 0.7);
+            border: 2px solid #00796b;
+            color: #00796b;
+            padding: 0.5rem 0.9rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+
+        .menu-item:hover {
+            background: #e0f7fa;
+            transform: translateY(-2px);
+        }
+
+        .menu-item.active {
+            background: #00796b;
+            color: white;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        main {
+            flex-grow: 1;
+            padding: 0.5rem 1rem 2rem;
+            max-width: 1100px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .section-header {
+            margin: 1rem 0 0.8rem;
+            color: #00796b;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.8rem;
+        }
+
+        .tool-card {
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            padding: 1rem;
+            text-align: center;
+            cursor: default;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            min-height: 180px;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .tool-card.hidden {
+            display: none;
+        }
+
+        .favorite-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: none;
+            border: none;
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            padding: 0.2rem;
+            line-height: 1;
+        }
+
+        .favorite-btn:hover {
+            transform: scale(1.2);
+        }
+
+        .favorite-btn.active {
+            color: #ffd700;
+        }
+
+        .tool-card img {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 0.6rem;
+            filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.15));
+            transition: transform 0.3s ease;
+            object-fit: contain;
+        }
+
+        .tool-card:hover img {
+            transform: scale(1.1);
+        }
+
+        .tool-card h2 {
+            margin-bottom: 0.3rem;
+            color: #00695c;
+            font-size: 0.95rem;
+            line-height: 1.2;
+        }
+
+        .tool-category {
+            font-size: 0.7rem;
+            color: #666;
+            margin-bottom: 0.6rem;
+            font-weight: 500;
+        }
+
+        .open-tool-btn {
+            background-color: #004d40;
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+            margin-top: auto;
+            font-size: 0.85rem;
+            width: 100%;
+        }
+
+        .open-tool-btn:hover {
+            background-color: #00796b;
+        }
+
+        /* ===== MODAL ===== */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            animation: fadeIn 0.3s ease;
+            padding: 1rem;
+        }
+
+        .modal.hidden {
+            display: none;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: #fff;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 2rem 1rem;
+            position: relative;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            color: #333;
+            transition: color 0.3s ease, transform 0.2s ease;
+            z-index: 10;
+        }
+
+        .close-btn:hover {
+            color: #00796b;
+            transform: rotate(90deg);
+        }
+
+        /* ===== SETTINGS MODAL ===== */
+        .settings-content {
+            padding: 1rem;
+        }
+
+        .setting-item {
+            padding: 1rem;
+            margin-bottom: 0.8rem;
+            background: rgba(0, 121, 107, 0.05);
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .setting-item h3 {
+            font-size: 1rem;
+            color: #00796b;
+            margin-bottom: 0.3rem;
+        }
+
+        .setting-item p {
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .setting-item button {
+            padding: 0.5rem 1rem;
+            background: #00796b;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+
+        .setting-item button:hover {
+            background: #004d40;
+        }
+
+        .setting-item button.danger {
+            background: #d32f2f;
+        }
+
+        .setting-item button.danger:hover {
+            background: #b71c1c;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            background: rgba(255, 255, 255, 0.3);
+            padding: 0.8rem;
+            text-align: center;
+            color: #004d40;
+            font-weight: 600;
+            font-size: 0.8rem;
+            backdrop-filter: blur(10px);
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.7);
+        }
+
+        /* ===== TOAST NOTIFICATION ===== */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #00796b;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.3s ease;
+            z-index: 1000;
+            max-width: 90%;
+            font-size: 0.9rem;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(400px); }
+            to { transform: translateX(0); }
+        }
+
+        /* ===== DARK MODE ===== */
+        body.dark {
+            background: linear-gradient(135deg, #121212, #1e1e1e);
+            color: #ddd;
+        }
+
+        body.dark header {
+            background: rgba(18, 18, 18, 0.7);
+            box-shadow: 0 0 15px rgba(0, 121, 107, 0.7);
+        }
+
+        body.dark header h1,
+        body.dark .subtitle {
+            color: #4db6ac;
+        }
+
+        body.dark .tool-card {
+            background: rgba(25, 25, 25, 0.7);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.7);
+            color: #eee;
+        }
+
+        body.dark .tool-card h2 {
+            color: #4db6ac;
+        }
+
+        body.dark .tool-category {
+            color: #999;
+        }
+
+        body.dark .menu-item {
+            background: rgba(25, 25, 25, 0.7);
+            color: #4db6ac;
+            border-color: #4db6ac;
+        }
+
+        body.dark .menu-item.active {
+            background: #00796b;
+            color: white;
+        }
+
+        body.dark #toolSearch {
+            background: rgba(25, 25, 25, 0.9);
+            color: #eee;
+            border-color: #4db6ac;
+        }
+
+        body.dark .modal-content {
+            background: #222;
+            color: #ddd;
+        }
+
+        body.dark .close-btn {
+            color: #eee;
+        }
+
+        body.dark footer {
+            background: rgba(18, 18, 18, 0.7);
+            color: #4db6ac;
+        }
+
+        body.dark .setting-item {
+            background: rgba(77, 182, 172, 0.1);
+        }
+
+        body.dark .setting-item h3 {
+            color: #4db6ac;
+        }
+
+        body.dark .setting-item p {
+            color: #999;
+        }
+
+        /* ===== IMAGE EDITOR SPECIFIC STYLES ===== */
+        .upload-section {
+            text-align: center;
+            padding: 2rem 1rem;
+            border: 3px dashed #00796b;
+            border-radius: 12px;
+            background: rgba(0, 121, 107, 0.05);
+            transition: background 0.3s ease;
+            cursor: pointer;
+        }
+
+        .upload-section:hover {
+            background: rgba(0, 121, 107, 0.1);
+        }
+
+        .canvas-container {
+            max-width: 100%;
+            max-height: 400px;
+            overflow: auto;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            background: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #imageCanvas {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            cursor: crosshair;
+        }
+
+        .editor-tabs {
+            display: flex;
+            gap: 0.3rem;
+            margin-bottom: 0.8rem;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            flex: 1;
+            min-width: 70px;
+            padding: 0.5rem 0.8rem;
+            background: #e0e0e0;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+        }
+
+        .tab-btn.active {
+            background: #00796b;
+            color: white;
+        }
+
+        .tool-panel {
+            display: none;
+            padding: 0.8rem;
+            background: rgba(0, 121, 107, 0.05);
+            border-radius: 8px;
+            margin-bottom: 0.8rem;
+        }
+
+        .tool-panel.active {
+            display: block;
+        }
+
+        .tool-btn {
+            padding: 0.4rem 0.8rem;
+            margin: 0.2rem;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.8rem;
+        }
+
+        .tool-btn:hover {
+            background: #e0f7fa;
+            border-color: #00796b;
+        }
+
+        .tool-btn.active {
+            background: #00796b;
+            color: white;
+            border-color: #00796b;
+        }
+
+        .resize-controls {
+            display: flex;
+            gap: 0.3rem;
+            margin-top: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .resize-controls input {
+            flex: 1;
+            min-width: 70px;
+            padding: 0.4rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.85rem;
+        }
+
+        .tool-panel label {
+            display: block;
+            margin: 0.5rem 0;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .tool-panel input[type="range"] {
+            width: 100%;
+            margin: 0.3rem 0;
+        }
+
+        .tool-panel input[type="color"] {
+            width: 50px;
+            height: 35px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.4rem;
+            margin-top: 0.8rem;
+            flex-wrap: wrap;
+        }
+
+        .action-buttons button {
+            flex: 1;
+            padding: 0.6rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+            min-width: 80px;
+        }
+
+        .primary-btn {
+            background: #00796b;
+            color: white;
+        }
+
+        .primary-btn:hover {
+            background: #004d40;
+        }
+
+        #resetBtn, #newImageBtn {
+            background: #e0e0e0;
+        }
+
+        #resetBtn:hover, #newImageBtn:hover {
+            background: #bdbdbd;
+        }
+
+        /* Dark mode for editor */
+        body.dark .canvas-container {
+            background: #1e1e1e;
+            border-color: #444;
+        }
+
+        body.dark .tool-btn {
+            background: #2a2a2a;
+            border-color: #444;
+            color: #eee;
+        }
+
+        body.dark .tab-btn {
+            background: #2a2a2a;
+            color: #eee;
+        }
+
+        body.dark .resize-controls input {
+            background: #2a2a2a;
+            color: #eee;
+            border-color: #444;
+        }
+
+        body.dark .upload-section {
+            border-color: #4db6ac;
+            background: rgba(77, 182, 172, 0.1);
+        }
+
+        /* Tool-specific styles */
+        .calc-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+
+        .calc-buttons button {
+            padding: 0.8rem;
+            font-size: 1.1rem;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .calc-buttons button:hover {
+            background: #e0f7fa;
+        }
+
+        .calc-buttons button:active {
+            transform: scale(0.95);
+        }
+
+        body.dark .calc-buttons button {
+            background: #2a2a2a;
+            border-color: #444;
+            color: #eee;
+        }
+
+        #clearCalc {
+            background: #00796b !important;
+            color: #fff !important;
+        }
+
+        /* Pomodoro Timer Styles */
+        .pomodoro-container {
+            text-align: center;
+        }
+
+        .timer-display {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #00796b;
+            margin: 1.5rem 0;
+            font-family: monospace;
+        }
+
+        .timer-controls {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .timer-controls button {
+            padding: 0.6rem 1.2rem;
+            font-size: 0.9rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .timer-mode {
+            display: flex;
+            gap: 0.3rem;
+            justify-content: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .mode-btn {
+            padding: 0.4rem 0.8rem;
+            background: #e0e0e0;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.8rem;
+        }
+
+        .mode-btn.active {
+            background: #00796b;
+            color: white;
+        }
+
+        /* Unit Converter Styles */
+        .converter-section {
+            margin: 0.8rem 0;
+        }
+
+        .converter-section select,
+        .converter-section input {
+            width: 100%;
+            padding: 0.7rem;
+            margin: 0.4rem 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        body.dark .converter-section select,
+        body.dark .converter-section input {
+            background: #2a2a2a;
+            color: #eee;
+            border-color: #444;
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #666;
+        }
+
+        .empty-state h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 360px) {
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .tool-card {
+                min-height: 160px;
+            }
+            
+            .tool-card img {
+                width: 50px;
+                height: 50px;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .tools-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            header h1 {
+                font-size: 2.5rem;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .tools-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>HAQ Utility</h1>
+        <p class="subtitle">All-in-One Handy Tools by Abdulhaq</p>
+        <div class="header-controls">
+            <button id="darkModeToggle">🌙 Dark Mode</button>
+            <button id="settingsBtn">⚙️ Settings</button>
+        </div>
+    </header>
+
+    <!-- Search & Filter Bar -->
+    <div class="search-filter-bar">
+        <div class="search-container">
+            <span class="search-icon">🔍</span>
+            <input type="search" id="toolSearch" placeholder="Search tools..." />
+        </div>
+        
+        <nav class="menu-bar">
+            <button class="menu-item active" data-category="all">All Tools</button>
+            <button class="menu-item" data-category="favorites">⭐ Favorites</button>
+            <button class="menu-item" data-category="recent">🕐 Recent</button>
+            <button class="menu-item" data-category="generators">🎲 Generators</button>
+            <button class="menu-item" data-category="calculators">🔢 Calculators</button>
+            <button class="menu-item" data-category="converters">🔄 Converters</button>
+            <button class="menu-item" data-category="text">📝 Text</button>
+            <button class="menu-item" data-category="utilities">🛠️ Utilities</button>
+        </nav>
+    </div>
+
+    <main>
+        <!-- Recently Used Tools -->
+        <div id="recentSection" style="display:none;">
+            <h3 class="section-header">🕐 Recently Used</h3>
+            <div class="tools-grid" id="recentTools"></div>
+        </div>
+
+        <!-- All Tools -->
+        <section class="tools-grid" id="allTools">
+            <!-- Generators -->
+            <div class="tool-card" data-tool="passwordGenerator" data-category="generators">
+                <button class="favorite-btn" data-fav="passwordGenerator">☆</button>
+                <img src="file_000000008cb061f79ce38a3934da11e3.png" alt="Password Generator" />
+                <h2>Password Generator</h2>
+                <p class="tool-category">Generator</p>
+                <button class="open-tool-btn">Open Tool</button>
+            </div>
+
+            <div class="tool-card" data-tool="uuidGenerator" data-category="generators">
+                <button class="favorite-btn" data-fav="uuidGenerator">☆</button>
+                <img src="u.jpg" alt="UUID Generator" />
+                <h2>UUID Generator</h2>
+                <p class="tool-category">Generator</p>
+                <button class="open-tool-btn">Open Tool</button>
+            </div>
+
+            <div class="tool-card" data-tool="qrCodeGenerator" data-category="generators">
+                <button class="favorite-btn" data-fav="qrCodeGenerator">☆</button>
+                <img src="IMG-20250703-WA0016.jpg" alt="QR Code Generator" />
+                <h2>QR Code Generator</h2>
+                <p class="tool-category">Generator</p>
+                <button class="open-tool-btn">Open Tool</button>
+            </div>
+
+            <div class="tool-card" data-tool="colorGenerator" data-category="generators">
+                <button class="favorite-btn" data-fav="colorGenerator">☆</button>
+                <img src="cp.jpg" alt="Color Generator" />
+                <h2>Color Palette</h2>
+                <p class="tool-category">Generator</p>
+                <button class="open-tool-btn">Open Tool</button>
+            </div>
+
+            <div class="tool-card" data-tool="loremGenerator" data-category="generators">
+                <button class="favorite-btn" data-fav="loremGenerator">☆</button>
+                <img src="l.jpg" alt="Lorem Ipsum" />
+                <h2>Lorem Ipsum</h2>
+                <p class="tool-category">Generator</p>
+                <button class="open-tool-btn">Open Tool</button>
+            </div>
+
+            <!-- Calculators -->
+            <div class="tool-card" data-tool="calculator" data-category="calculators">
+                <button class="favorite-btn" data-fav="calculator">☆</button>
+                <img src="file_00000000db9461fd8e00cef01f0f1f38.png" alt="Calculator" />
+                <h2>Calculator</h2>
+                <p class="tool-category">Calculator</p>
+                <button class="open-tool-btn">Open Tool</button>
+            </div>
+
+            <div class="tool-card" data-tool="ageCalculator" data-category="calculators">
+                <button class="favorite-btn" data-fav="ageCalculator">☆</button>
+                <img src="file_00000000c01061f793310506c3f0e7ca.png" alt="Age Calculator" />
+                <h2>Age Calculator</h2>
+                <p class="tool-category">Calculator</p>
+                <button class="open-tool-btn">Open Tool</button>
+            </div>
+
+            <div class="tool-card" data-tool="bmiCalculator" data-category="calculators">
+                <button class="favorite-btn" data-fav="bmiCalculator">☆</button>
+                <img src="b.jpg" alt="BMI Calculator" />
+                <h2>BMI Calculator</h2>
+                <p class="tool-category">Calculator</p>
+                <button class="open-tool-btn">Open Tool</button>
+            </div>
+
+            <div class="tool-card" data-tool="tipCalculator" data-category="calculators">
+                <button class="favorite-btn" data-fav="tipCalculator">☆</button>
+                <img src="tip.jpg" alt="Tip Calculator" />
+                <h2>Tip Calculator</h2>
+                <p class="tool-category">Calculator</p>
+                <button class="open-tool-btn">Open Tool</button>
+            </div>
+
+            <!-- Converters -->
+            <div class="tool-card" data-tool="unitConverter" data-category="converters">
+                <button class="favorite-btn" data-fav="unitConverter">☆</button>
+                <img src="uc.jpg" alt="Unit Converter" />
+                <h2>Unit Converter</h2>
+                <p class="tool-category">Converter</p>
+                <button class="open-tool-btn">Open Tool</button>
+            </div>
+
+            <div class="tool-card" data-tool="colorConverter" data-category="converters">
+                <button class="favorite-btn" data-fav="colorConverter">☆</button>
+                <img src="cc.jpg" alt="Color Converter" />
+                <h2>Color Converter</h2>
+                <p class="tool-category">Converter</p>
+                <button class="open-tool-btn">Open Tool</button>
+            </div>
+
+            <div class="tool-card" data-tool="encoderDecoder" data-category="converters">
+                <button class="favorite-btn" data-fav="encoderDecoder">☆</button>
+                <img src="file_00000000a50061fda900c9f829c632cf.png" alt="Text Encoder/Decoder" />
+                <h2>Base64 Encoder</h2>
+                <p class="tool-category">Converter</p>
+                <button class="open-tool-btn">Open Tool</button>
+            </div>
+
+            <!-- Text Tools -->
+            <div class="tool-card" data-tool="wordCounter" data-category="text">
+                <button class="favorite-btn" data-fav="wordCounter">☆</button>
+                <img src=
+                "wc.jpg" alt="Word Counter" />
+                <h2>Word Counter</h2>
+                <p class="tool-category">Text Tool</p>
+                <button class="open-tool-btn">Open Tool</button>
+            </div>
+
+            <div class="tool-card" data-tool="caseConverter" data-category="text">
+                <button class="favorite-btn" data-fav="caseConverter">☆</button>
+                <img src="c.jpg" alt="Case Converter" />
+                <h2>Case Converter</h2>
+                <p class="tool-category">Text Tool</p>
+                <button class="open-tool-btn">Open Tool</button>
+            </div>
+
+            <div class="tool-card" data-tool="jsonFormatter" data-category="text">
+                <button class="favorite-btn" data-fav="jsonFormatter">☆</button>
+                <img src="json.jpg" alt="JSON Formatter" />
+                <h2>JSON Formatter</h2>
+                <p class="tool-category">Text Tool</p>
+                <button class="open-tool-btn">Open Tool</button>
+            </div>
+
+            <!-- Utilities -->
+            <div class="tool-card" data-tool="notepad" data-category="utilities">
+                <button class="favorite-btn" data-fav="notepad">☆</button>
+                <img src="file_00000000a5d861f7865ea63abe0d8d5a.png" alt="NotePad" />
+                <h2>NotePad</h2>
+                <p class="tool-category">Utility</p>
+                <button class="open-tool-btn">Open Tool</button>
+            </div>
+
+            <div class="tool-card" data-tool="pomodoroTimer" data-category="utilities">
+                <button class="favorite-btn" data-fav="pomodoroTimer">☆</button>
+                <img src="p.jpg" alt="Pomodoro Timer" />
+                <h2>Pomodoro Timer</h2>
+                <p class="tool-category">Utility</p>
+                <button class="open-tool-btn">Open Tool</button>
+            </div>
+
+            <div class="tool-card" data-tool="stopwatch" data-category="utilities">
+                <button class="favorite-btn" data-fav="stopwatch">☆</button>
+                <img src="s.jpg" alt="Stopwatch" />
+                <h2>Stopwatch</h2>
+                <p class="tool-category">Utility</p>
+                <button class="open-tool-btn">Open Tool</button>
+            </div>
+
+            <div class="tool-card" data-tool="imageEditor" data-category="utilities">
+                <button class="favorite-btn" data-fav="imageEditor">☆</button>
+                <img src="im.jpg" alt="Image Editor" />
+                <h2>Image Editor</h2>
+                <p class="tool-category">Utility</p>
+                <button class="open-tool-btn">Open Tool</button>
+            </div>
+        </section>
+
+        <!-- Empty State -->
+        <div class="empty-state" id="emptyState" style="display:none;">
+            <h3>No tools found</h3>
+            <p>Try a different search or category</p>
+        </div>
+    </main>
+
+    <!-- Modal for tools -->
+    <div id="toolModal" class="modal hidden">
+        <div class="modal-content">
+            <button class="close-btn" title="Close">&times;</button>
+            <div id="toolContainer"></div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal hidden">
+        <div class="modal-content">
+            <button class="close-btn" id="closeSettings" title="Close">&times;</button>
+            <h2 style="margin-bottom:1.5rem;">⚙️ Settings</h2>
+            <div class="settings-content">
+                <div class="setting-item">
+                    <div>
+                        <h3>Dark Mode</h3>
+                        <p>Toggle dark/light theme</p>
+                    </div>
+                    <button id="settingsDarkMode">Toggle</button>
+                </div>
+                
+                <div class="setting-item">
+                    <div>
+                        <h3>Clear All Favorites</h3>
+                        <p>Remove all favorited tools</p>
+                    </div>
+                    <button id="clearFavorites" class="danger">Clear</button>
+                </div>
+                
+                <div class="setting-item">
+                    <div>
+                        <h3>Clear Recent History</h3>
+                        <p>Remove recently used tools</p>
+                    </div>
+                    <button id="clearRecent" class="danger">Clear</button>
+                </div>
+                
+                <div class="setting-item">
+                    <div>
+                        <h3>Clear All Data</h3>
+                        <p>Reset app to defaults (Notes, Favorites, Recent)</p>
+                    </div>
+                    <button id="clearAllData" class="danger">Clear All</button>
+                </div>
+                
+                <div class="setting-item" style="flex-direction:column; align-items:flex-start;">
+                    <div>
+                        <h3>About HAQ Utility</h3>
+                        <p style="margin-top:0.5rem;">Version: 2.0</p>
+                        <p>Created by: Abdulhaq Abdul Ganiy</p>
+                        <p>Total Tools: <span id="settingsToolCount">20</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2025 HAQ Utility by Abdulhaq Abdul Ganiy | <span id="toolCount">20</span> Tools Available</p>
+    </footer>
+
+    <script>
+        // ===== TOOLS CONFIGURATION ===== 
+        const tools = {
+            passwordGenerator: {
+                render: (container) => {
+                    container.innerHTML = `
+                        <h2>🔐 Password Generator</h2>
+                        <p style="margin-bottom:1rem;">Generate strong, secure passwords</p>
+                        <div style="margin-bottom:1rem;">
+                            <label>Length: <input type="number" id="pwLength" value="16" min="6" max="64" style="width:80px;padding:0.5rem;"></label>
+                        </div>
+                        <div style="margin-bottom:1rem;">
+                            <label><input type="checkbox" id="pwUppercase" checked> Uppercase (A-Z)</label><br>
+                            <label><input type="checkbox" id="pwLowercase" checked> Lowercase (a-z)</label><br>
+                            <label><input type="checkbox" id="pwNumbers" checked> Numbers (0-9)</label><br>
+                            <label><input type="checkbox" id="pwSymbols" checked> Symbols (!@#$...)</label>
+                        </div>
+                        <button id="generatePw" class="primary-btn" style="width:100%;padding:0.8rem;margin-bottom:1rem;">Generate Password</button>
+                        <textarea id="pwOutput" readonly rows="3" style="width:100%;padding:0.8rem;font-family:monospace;font-size:1.1rem;"></textarea>
+                        <button id="copyPw" style="width:100%;padding:0.8rem;margin-top:0.5rem;">📋 Copy to Clipboard</button>
+                    `;
+                    
+                    const generateBtn = container.querySelector('#generatePw');
+                    const copyBtn = container.querySelector('#copyPw');
+                    const output = container.querySelector('#pwOutput');
+
+                    function generatePassword() {
+                        const length = parseInt(container.querySelector('#pwLength').value);
+                        const useUpper = container.querySelector('#pwUppercase').checked;
+                        const useLower = container.querySelector('#pwLowercase').checked;
+                        const useNumbers = container.querySelector('#pwNumbers').checked;
+                        const useSymbols = container.querySelector('#pwSymbols').checked;
+
+                        let chars = '';
+                        if (useUpper) chars += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                        if (useLower) chars += 'abcdefghijklmnopqrstuvwxyz';
+                        if (useNumbers) chars += '0123456789';
+                        if (useSymbols) chars += '!@#$%^&*()_+-=[]{}|;:,.<>?';
+
+                        if (chars === '') {
+                            showToast('Please select at least one character type');
+                            return;
+                        }
+
+                        let password = '';
+                        for (let i = 0; i < length; i++) {
+                            password += chars.charAt(Math.floor(Math.random() * chars.length));
+                        }
+                        output.value = password;
+                    }
+
+                    generateBtn.addEventListener('click', generatePassword);
+                    copyBtn.addEventListener('click', () => {
+                        if (output.value) {
+                            navigator.clipboard.writeText(output.value);
+                            showToast('Password copied to clipboard!');
+                        }
+                    });
+
+                    generatePassword(); // Auto-generate on open
+                }
+            },
+
+            uuidGenerator: {
+                render: (container) => {
+                    container.innerHTML = `
+                        <h2>🆔 UUID/GUID Generator</h2>
+                        <p style="margin-bottom:1rem;">Generate universally unique identifiers</p>
+                        <button id="generateUuid" class="primary-btn" style="width:100%;padding:0.8rem;margin-bottom:1rem;">Generate UUID</button>
+                        <textarea id="uuidOutput" readonly rows="5" style="width:100%;padding:0.8rem;font-family:monospace;"></textarea>
+                        <button id="copyUuid" style="width:100%;padding:0.8rem;margin-top:0.5rem;">📋 Copy to Clipboard</button>
+                    `;
+
+                    function generateUUID() {
+                        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                            const r = Math.random() * 16 | 0;
+                            const v = c == 'x' ? r : (r & 0x3 | 0x8);
+                            return v.toString(16);
+                        });
+                    }
+
+                    const output = container.querySelector('#uuidOutput');
+                    const generateBtn = container.querySelector('#generateUuid');
+                    const copyBtn = container.querySelector('#copyUuid');
+
+                    generateBtn.addEventListener('click', () => {
+                        const uuids = [];
+                        for (let i = 0; i < 5; i++) {
+                            uuids.push(generateUUID());
+                        }
+                        output.value = uuids.join('\n');
+                    });
+
+                    copyBtn.addEventListener('click', () => {
+                        if (output.value) {
+                            navigator.clipboard.writeText(output.value);
+                            showToast('UUIDs copied!');
+                        }
+                    });
+
+                    generateBtn.click(); // Auto-generate
+                }
+            },
+
+            calculator: {
+                render: (container) => {
+                    container.innerHTML = `
+                        <h2>🔢 Calculator</h2>
+                        <input type="text" id="calcInput" readonly style="width:100%; font-size:1.5rem; margin-bottom:1rem; padding:1rem; text-align:right; border:2px solid #00796b; border-radius:8px;" />
+                        <div class="calc-buttons">
+                            <button>7</button><button>8</button><button>9</button><button>/</button>
+                            <button>4</button><button>5</button><button>6</button><button>*</button>
+                            <button>1</button><button>2</button><button>3</button><button>-</button>
+                            <button>0</button><button>.</button><button>=</button><button>+</button>
+                            <button id="clearCalc" style="grid-column: span 4;">Clear</button>
+                        </div>
+                    `;
+
+                    const input = container.querySelector('#calcInput');
+                    const buttons = container.querySelectorAll('.calc-buttons button');
+                    
+                    // Safe calculation function (replaces eval)
+                    function safeCalculate(expression) {
+                        try {
+                            // Remove any non-numeric characters except operators
+                            const sanitized = expression.replace(/[^0-9+\-*/.()]/g, '');
+                            // Use Function constructor (safer than eval)
+                            return Function('"use strict"; return (' + sanitized + ')')();
+                        } catch {
+                            return 'Error';
+                        }
+                    }
+
+                    buttons.forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            if (btn.id === 'clearCalc') {
+                                input.value = '';
+                            } else if (btn.textContent === '=') {
+                                const result = safeCalculate(input.value);
+                                input.value = result;
+                            } else {
+                                if (input.value === 'Error') input.value = '';
+                                input.value += btn.textContent;
+                            }
+                        });
+                    });
+                }
+            },
+
+            ageCalculator: {
+                render: (container) => {
+                    container.innerHTML = `
+                        <h2>🎂 Age Calculator</h2>
+                        <p style="margin-bottom:1rem;">Calculate your exact age</p>
+                        <label style="display:block;margin-bottom:1rem;">
+                            Enter your birthdate: 
+                            <input type="date" id="birthdate" style="width:100%;padding:0.8rem;margin-top:0.5rem;">
+                        </label>
+                        <button id="calcAgeBtn" class="primary-btn" style="width:100%;padding:0.8rem;">Calculate Age</button>
+                        <div id="ageResult" style="margin-top:1.5rem; padding:1rem; background:rgba(0,121,107,0.1); border-radius:8px; display:none;"></div>
+                    `;
+
+                    const birthdateInput = container.querySelector('#birthdate');
+                    const calcBtn = container.querySelector('#calcAgeBtn');
+                    const result = container.querySelector('#ageResult');
+
+                    calcBtn.addEventListener('click', () => {
+                        const birthdate = new Date(birthdateInput.value);
+                        if (!birthdate.getTime()) {
+                            showToast('Please enter a valid birthdate');
+                            return;
+                        }
+
+                        const now = new Date();
+                        const ageMs = now - birthdate;
+                        const ageDate = new Date(ageMs);
+                        
+                        const years = ageDate.getUTCFullYear() - 1970;
+                        const months = ageDate.getUTCMonth();
+                        const days = ageDate.getUTCDate() - 1;
+                        
+                        const totalDays = Math.floor(ageMs / (1000 * 60 * 60 * 24));
+                        const totalHours = Math.floor(ageMs / (1000 * 60 * 60));
+                        const totalMinutes = Math.floor(ageMs / (1000 * 60));
+
+                        result.innerHTML = `
+                            <h3 style="color:#00796b;margin-bottom:1rem;">Your Age:</h3>
+                            <p style="font-size:1.2rem;margin-bottom:0.5rem;"><strong>${years}</strong> years, <strong>${months}</strong> months, <strong>${days}</strong> days</p>
+                            <p>Or approximately:</p>
+                            <ul style="list-style:none;padding:0;margin-top:0.5rem;">
+                                <li>📅 ${totalDays.toLocaleString()} days</li>
+                                <li>⏰ ${totalHours.toLocaleString()} hours</li>
+                                <li>⏱️ ${totalMinutes.toLocaleString()} minutes</li>
+                            </ul>
+                        `;
+                        result.style.display = 'block';
+                    });
+                }
+            },
+
+            bmiCalculator: {
+                render: (container) => {
+                    container.innerHTML = `
+                        <h2>⚖️ BMI Calculator</h2>
+                        <p style="margin-bottom:1rem;">Calculate your Body Mass Index</p>
+                        <div style="margin-bottom:1rem;">
+                            <label>Weight (kg): <input type="number" id="weight" style="width:100%;padding:0.8rem;margin-top:0.5rem;"></label>
+                        </div>
+                        <div style="margin-bottom:1rem;">
+                            <label>Height (cm): <input type="number" id="height" style="width:100%;padding:0.8rem;margin-top:0.5rem;"></label>
+                        </div>
+                        <button id="calcBmi" class="primary-btn" style="width:100%;padding:0.8rem;">Calculate BMI</button>
+                        <div id="bmiResult" style="margin-top:1.5rem;display:none;"></div>
+                    `;
+
+                    const weightInput = container.querySelector('#weight');
+                    const heightInput = container.querySelector('#height');
+                    const calcBtn = container.querySelector('#calcBmi');
+                    const result = container.querySelector('#bmiResult');
+
+                    calcBtn.addEventListener('click', () => {
+                        const weight = parseFloat(weightInput.value);
+                        const height = parseFloat(heightInput.value) / 100; // Convert to meters
+
+                        if (!weight || !height || weight <= 0 || height <= 0) {
+                            showToast('Please enter valid weight and height');
+                            return;
+                        }
+
+                        const bmi = (weight / (height * height)).toFixed(1);
+                        let category = '';
+                        let color = '';
+
+                        if (bmi < 18.5) {
+                            category = 'Underweight';
+                            color = '#3498db';
+                        } else if (bmi < 25) {
+                            category = 'Normal weight';
+                            color = '#2ecc71';
+                        } else if (bmi < 30) {
+                            category = 'Overweight';
+                            color = '#f39c12';
+                        } else {
+                            category = 'Obese';
+                            color = '#e74c3c';
+                        }
+
+                        result.innerHTML = `
+                            <div style="padding:1.5rem; background:rgba(0,121,107,0.1); border-radius:8px; text-align:center;">
+                                <h3 style="font-size:2.5rem; color:${color}; margin-bottom:0.5rem;">${bmi}</h3>
+                                <p style="font-size:1.2rem; font-weight:600; color:${color};">${category}</p>
+                                <p style="margin-top:1rem; font-size:0.9rem; color:#666;">
+                                    BMI ranges: Underweight (&lt;18.5) | Normal (18.5-24.9) | Overweight (25-29.9) | Obese (≥30)
+                                </p>
+                            </div>
+                        `;
+                        result.style.display = 'block';
+                    });
+                }
+            },
+
+            tipCalculator: {
+                render: (container) => {
+                    container.innerHTML = `
+                        <h2>💰 Tip Calculator</h2>
+                        <p style="margin-bottom:1rem;">Calculate tip and split the bill</p>
+                        <div style="margin-bottom:1rem;">
+                            <label>Bill Amount: <input type="number" id="billAmount" step="0.01" style="width:100%;padding:0.8rem;margin-top:0.5rem;"></label>
+                        </div>
+                        <div style="margin-bottom:1rem;">
+                            <label>Tip Percentage: <input type="number" id="tipPercent" value="15" style="width:100%;padding:0.8rem;margin-top:0.5rem;"></label>
+                        </div>
+                        <div style="margin-bottom:1rem;">
+                            <label>Number of People: <input type="number" id="numPeople" value="1" min="1" style="width:100%;padding:0.8rem;margin-top:0.5rem;"></label>
+                        </div>
+                        <button id="calcTip" class="primary-btn" style="width:100%;padding:0.8rem;">Calculate</button>
+                        <div id="tipResult" style="margin-top:1.5rem;display:none;"></div>
+                    `;
+
+                    const billInput = container.querySelector('#billAmount');
+                    const tipInput = container.querySelector('#tipPercent');
+                    const peopleInput = container.querySelector('#numPeople');
+                    const calcBtn = container.querySelector('#calcTip');
+                    const result = container.querySelector('#tipResult');
+
+                    function calculate() {
+                        const bill = parseFloat(billInput.value);
+                        const tipPercent = parseFloat(tipInput.value);
+                        const people = parseInt(peopleInput.value);
+
+                        if (!bill || !tipPercent || !people || bill <= 0 || people <= 0) {
+                            showToast('Please enter valid values');
+                            return;
+                        }
+
+                        const tipAmount = bill * (tipPercent / 100);
+                        const total = bill + tipAmount;
+                        const perPerson = total / people;
+
+                        result.innerHTML = `
+                            <div style="padding:1.5rem; background:rgba(0,121,107,0.1); border-radius:8px;">
+                                <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem;">
+                                    <span>Tip Amount:</span>
+                                    <strong>$${tipAmount.toFixed(2)}</strong>
+                                </div>
+                                <div style="display:flex; justify-content:space-between; margin-bottom:0.5rem;">
+                                    <span>Total:</span>
+                                    <strong>$${total.toFixed(2)}</strong>
+                                </div>
+                                <hr style="margin:1rem 0; border:none; border-top:1px solid #ccc;">
+                                <div style="display:flex; justify-content:space-between; font-size:1.2rem;">
+                                    <span>Per Person:</span>
+                                    <strong style="color:#00796b;">$${perPerson.toFixed(2)}</strong>
+                                </div>
+                            </div>
+                        `;
+                        result.style.display = 'block';
+                    }
+
+                    calcBtn.addEventListener('click', calculate);
+                    [billInput, tipInput, peopleInput].forEach(input => {
+                        input.addEventListener('input', () => {
+                            if (billInput.value && tipInput.value && peopleInput.value) {
+                                calculate();
+                            }
+                        });
+                    });
+                }
+            },
+
+            unitConverter: {
+                render: (container) => {
+                    container.innerHTML = `
+                        <h2>🔄 Unit Converter</h2>
+                        <div class="converter-section">
+                            <select id="unitType">
+                                <option value="length">Length</option>
+                                <option value="weight">Weight</option>
+                                <option value="temperature">Temperature</option>
+                                <option value="area">Area</option>
+                                <option value="volume">Volume</option>
+                            </select>
+                        </div>
+                        <div class="converter-section">
+                            <input type="number" id="fromValue" placeholder="Enter value" step="any" />
+                            <select id="fromUnit"></select>
+                        </div>
+                        <div style="text-align:center; margin:1rem 0; font-size:1.5rem;">⬇️</div>
+                        <div class="converter-section">
+                            <input type="number" id="toValue" placeholder="Result" readonly />
+                            <select id="toUnit"></select>
+                        </div>
+                    `;
+
+                    const units = {
+                        length: {
+                            'Meters': 1,
+                            'Kilometers': 0.001,
+                            'Centimeters': 100,
+                            'Millimeters': 1000,
+                            'Miles': 0.000621371,
+                            'Yards': 1.09361,
+                            'Feet': 3.28084,
+                            'Inches': 39.3701
+                        },
+                        weight: {
+                            'Kilograms': 1,
+                            'Grams': 1000,
+                            'Milligrams': 1000000,
+                            'Pounds': 2.20462,
+                            'Ounces': 35.274,
+                            'Tons': 0.001
+                        },
+                        temperature: {
+                            'Celsius': 'C',
+                            'Fahrenheit': 'F',
+                            'Kelvin': 'K'
+                        },
+                        area: {
+                            'Square Meters': 1,
+                            'Square Kilometers': 0.000001,
+                            'Square Feet': 10.7639,
+                            'Square Miles': 3.861e-7,
+                            'Acres': 0.000247105,
+                            'Hectares': 0.0001
+                        },
+                        volume: {
+                            'Liters': 1,
+                            'Milliliters': 1000,
+                            'Gallons': 0.264172,
+                            'Quarts': 1.05669,
+                            'Cups': 4.22675,
+                            'Cubic Meters': 0.001
+                        }
+                    };
+
+                    const typeSelect = container.querySelector('#unitType');
+                    const fromValue = container.querySelector('#fromValue');
+                    const toValue = container.querySelector('#toValue');
+                    const fromUnit = container.querySelector('#fromUnit');
+                    const toUnit = container.querySelector('#toUnit');
+
+                    function populateUnits() {
+                        const type = typeSelect.value;
+                        const unitList = Object.keys(units[type]);
+                        
+                        fromUnit.innerHTML = '';
+                        toUnit.innerHTML = '';
+                        
+                        unitList.forEach(unit => {
+                            fromUnit.innerHTML += `<option value="${unit}">${unit}</option>`;
+                            toUnit.innerHTML += `<option value="${unit}">${unit}</option>`;
+                        });
+                        
+                        toUnit.selectedIndex = Math.min(1, unitList.length - 1);
+                    }
+
+                    function convert() {
+                        const type = typeSelect.value;
+                        const value = parseFloat(fromValue.value);
+                        const from = fromUnit.value;
+                        const to = toUnit.value;
+
+                        if (!value && value !== 0) {
+                            toValue.value = '';
+                            return;
+                        }
+
+                        if (type === 'temperature') {
+                            let result;
+                            if (from === 'Celsius' && to === 'Fahrenheit') result = (value * 9/5) + 32;
+                            else if (from === 'Celsius' && to === 'Kelvin') result = value + 273.15;
+                            else if (from === 'Fahrenheit' && to === 'Celsius') result = (value - 32) * 5/9;
+                            else if (from === 'Fahrenheit' && to === 'Kelvin') result = (value - 32) * 5/9 + 273.15;
+                            else if (from === 'Kelvin' && to === 'Celsius') result = value - 273.15;
+                            else if (from === 'Kelvin' && to === 'Fahrenheit') result = (value - 273.15) * 9/5 + 32;
+                            else result = value;
+                            toValue.value = result.toFixed(2);
+                        } else {
+                            const fromFactor = units[type][from];
+                            const toFactor = units[type][to];
+                            const result = value / fromFactor * toFactor;
+                            toValue.value = result.toFixed(6);
+                        }
+                    }
+
+                    typeSelect.addEventListener('change', populateUnits);
+                    fromValue.addEventListener('input', convert);
+                    fromUnit.addEventListener('change', convert);
+                    toUnit.addEventListener('change', convert);
+
+                    populateUnits();
+                }
+            },
+
+            colorConverter: {
+                render: (container) => {
+                    container.innerHTML = `
+                        <h2>🎨 Color Converter</h2>
+                        <p style="margin-bottom:1rem;">Convert between HEX, RGB, and HSL</p>
+                        <div style="margin-bottom:1rem;">
+                            <label>Pick a color: 
+                                <input type="color" id="colorPicker" value="#00796b" style="width:100px; height:60px; border:none; cursor:pointer; margin-top:0.5rem;">
+                            </label>
+                        </div>
+                        <div id="colorValues" style="padding:1rem; background:rgba(0,121,107,0.1); border-radius:8px;"></div>
+                        <div id="colorPreview" style="margin-top:1rem; height:100px; border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,0.2);"></div>
+                    `;
+
+                    const picker = container.querySelector('#colorPicker');
+                    const values = container.querySelector('#colorValues');
+                    const preview = container.querySelector('#colorPreview');
+
+                    function hexToRgb(hex) {
+                        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+                        return result ? {
+                            r: parseInt(result[1], 16),
+                            g: parseInt(result[2], 16),
+                            b: parseInt(result[3], 16)
+                        } : null;
+                    }
+
+                    function rgbToHsl(r, g, b) {
+                        r /= 255; g /= 255; b /= 255;
+                        const max = Math.max(r, g, b), min = Math.min(r, g, b);
+                        let h, s, l = (max + min) / 2;
+
+                        if (max === min) {
+                            h = s = 0;
+                        } else {
+                            const d = max - min;
+                            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+                            switch (max) {
+                                case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
+                                case g: h = ((b - r) / d + 2) / 6; break;
+                                case b: h = ((r - g) / d + 4) / 6; break;
+                            }
+                        }
+
+                        return {
+                            h: Math.round(h * 360),
+                            s: Math.round(s * 100),
+                            l: Math.round(l * 100)
+                        };
+                    }
+
+                    function updateColor() {
+                        const hex = picker.value;
+                        const rgb = hexToRgb(hex);
+                        const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+
+                        values.innerHTML = `
+                            <div style="margin-bottom:0.5rem;"><strong>HEX:</strong> ${hex.toUpperCase()}</div>
+                            <div style="margin-bottom:0.5rem;"><strong>RGB:</strong> rgb(${rgb.r}, ${rgb.g}, ${rgb.b})</div>
+                            <div><strong>HSL:</strong> hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)</div>
+                        `;
+                        preview.style.background = hex;
+                    }
+
+                    picker.addEventListener('input', updateColor);
+                    updateColor();
+                }
+            },
+
+            encoderDecoder: {
+                render: (container) => {
+                    container.innerHTML = `
+                        <h2>🔐 Base64 Encoder/Decoder</h2>
+                        <textarea id="inputText" placeholder="Enter text here" rows="4" style="width:100%; padding:0.8rem; margin-bottom:1rem;"></textarea>
+                        <div style="display:flex; gap:0.5rem; margin-bottom:1rem;">
+                            <button id="encodeBtn" class="primary-btn" style="flex:1; padding:0.8rem;">Encode</button>
+                            <button id="decodeBtn" class="primary-btn" style="flex:1; padding:0.8rem;">Decode</button>
+                        </div>
+                        <textarea id="outputText" readonly rows="4" style="width:100%; padding:0.8rem;"></textarea>
+                        <button id="copyEncoded" style="width:100%; padding:0.8rem; margin-top:0.5rem;">📋 Copy Result</button>
+                    `;
+
+                    const input = container.querySelector('#inputText');
+                    const output = container.querySelector('#outputText');
+                    const encodeBtn = container.querySelector('#encodeBtn');
+                    const decodeBtn = container.querySelector('#decodeBtn');
+                    const copyBtn = container.querySelector('#copyEncoded');
+
+                    encodeBtn.addEventListener('click', () => {
+                        try {
+                            output.value = btoa(unescape(encodeURIComponent(input.value)));
+                        } catch {
+                            showToast('Invalid input for encoding');
+                        }
+                    });
+
+                    decodeBtn.addEventListener('click', () => {
+                        try {
+                            output.value = decodeURIComponent(escape(atob(input.value)));
+                        } catch {
+                            showToast('Invalid Base64 input');
+                        }
+                    });
+
+                    copyBtn.addEventListener('click', () => {
+                        if (output.value) {
+                            navigator.clipboard.writeText(output.value);
+                            showToast('Copied to clipboard!');
+                        }
+                    });
+                }
+            },
+
+            wordCounter: {
+                render: (container) => {
+                    container.innerHTML = `
+                        <h2>📝 Word Counter</h2>
+                        <textarea id="textInput" placeholder="Type or paste your text here..." rows="8" style="width:100%; padding:0.8rem; margin-bottom:1rem;"></textarea>
+                        <div id="stats" style="padding:1rem; background:rgba(0,121,107,0.1); border-radius:8px; display:grid; grid-template-columns:1fr 1fr; gap:1rem;"></div>
+                    `;
+
+                    const textInput = container.querySelector('#textInput');
+                    const stats = container.querySelector('#stats');
+
+                    function updateStats() {
+                        const text = textInput.value;
+                        const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+                        const chars = text.length;
+                        const charsNoSpaces = text.replace(/\s/g, '').length;
+                        const sentences = text.split(/[.!?]+/).filter(s => s.trim()).length;
+                        const paragraphs = text.split(/\n\n+/).filter(p => p.trim()).length;
+                        const readingTime = Math.ceil(words / 200); // Average reading speed
+
+                        stats.innerHTML = `
+                            <div><strong>Words:</strong> ${words}</div>
+                            <div><strong>Characters:</strong> ${chars}</div>
+                            <div><strong>Characters (no spaces):</strong> ${charsNoSpaces}</div>
+                            <div><strong>Sentences:</strong> ${sentences}</div>
+                            <div><strong>Paragraphs:</strong> ${paragraphs}</div>
+                            <div><strong>Reading time:</strong> ~${readingTime} min</div>
+                        `;
+                    }
+
+                    textInput.addEventListener('input', updateStats);
+                    updateStats();
+                }
+            },
+
+            caseConverter: {
+                render: (container) => {
+                    container.innerHTML = `
+                        <h2>🔤 Case Converter</h2>
+                        <textarea id="caseInput" placeholder="Enter text to convert..." rows="5" style="width:100%; padding:0.8rem; margin-bottom:1rem;"></textarea>
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; margin-bottom:1rem;">
+                            <button class="case-btn" data-case="upper">UPPERCASE</button>
+                            <button class="case-btn" data-case="lower">lowercase</button>
+                            <button class="case-btn" data-case="title">Title Case</button>
+                            <button class="case-btn" data-case="sentence">Sentence case</button>
+                            <button class="case-btn" data-case="toggle">tOGGLE cASE</button>
+                            <button class="case-btn" data-case="camel">camelCase</button>
+                        </div>
+                        <textarea id="caseOutput" readonly rows="5" style="width:100%; padding:0.8rem;"></textarea>
+                        <button id="copyCaseOutput" style="width:100%; padding:0.8rem; margin-top:0.5rem;">📋 Copy Result</button>
+                    `;
+
+                    const input = container.querySelector('#caseInput');
+                    const output = container.querySelector('#caseOutput');
+                    const buttons = container.querySelectorAll('.case-btn');
+                    const copyBtn = container.querySelector('#copyCaseOutput');
+
+                    buttons.forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            const text = input.value;
+                            const caseType = btn.dataset.case;
+
+                            switch(caseType) {
+                                case 'upper':
+                                    output.value = text.toUpperCase();
+                                    break;
+                                case 'lower':
+                                    output.value = text.toLowerCase();
+                                    break;
+                                case 'title':
+                                    output.value = text.toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
+                                    break;
+                                case 'sentence':
+                                    output.value = text.toLowerCase().replace(/(^\w|\.\s+\w)/g, l => l.toUpperCase());
+                                    break;
+                                case 'toggle':
+                                    output.value = text.split('').map(c => 
+                                        c === c.toUpperCase() ? c.toLowerCase() : c.toUpperCase()
+                                    ).join('');
+                                    break;
+                                case 'camel':
+                                    output.value = text.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (m, chr) => chr.toUpperCase());
+                                    break;
+                            }
+                        });
+                    });
+
+                    copyBtn.addEventListener('click', () => {
+                        if (output.value) {
+                            navigator.clipboard.writeText(output.value);
+                            showToast('Copied!');
+                        }
+                    });
+                }
+            },
+
+            jsonFormatter: {
+                render: (container) => {
+                    container.innerHTML = `
+                        <h2>📋 JSON Formatter & Validator</h2>
+                        <textarea id="jsonInput" placeholder='Enter JSON here... e.g. {"name":"value"}' rows="8" style="width:100%; padding:0.8rem; margin-bottom:1rem; font-family:monospace;"></textarea>
+                        <div style="display:flex; gap:0.5rem; margin-bottom:1rem;">
+                            <button id="formatJson" class="primary-btn" style="flex:1; padding:0.8rem;">Format</button>
+                            <button id="minifyJson" class="primary-btn" style="flex:1; padding:0.8rem;">Minify</button>
+                            <button id="validateJson" class="primary-btn" style="flex:1; padding:0.8rem;">Validate</button>
+                        </div>
+                        <div id="jsonStatus" style="padding:0.8rem; margin-bottom:1rem; border-radius:8px; display:none;"></div>
+                        <textarea id="jsonOutput" readonly rows="8" style="width:100%; padding:0.8rem; font-family:monospace;"></textarea>
+                    `;
+
+                    const input = container.querySelector('#jsonInput');
+                    const output = container.querySelector('#jsonOutput');
+                    const status = container.querySelector('#jsonStatus');
+                    const formatBtn = container.querySelector('#formatJson');
+                    const minifyBtn = container.querySelector('#minifyJson');
+                    const validateBtn = container.querySelector('#validateJson');
+
+                    formatBtn.addEventListener('click', () => {
+                        try {
+                            const obj = JSON.parse(input.value);
+                            output.value = JSON.stringify(obj, null, 2);
+                            status.style.display = 'block';
+                            status.style.background = '#d4edda';
+                            status.style.color = '#155724';
+                            status.textContent = '✓ Valid JSON - Formatted';
+                        } catch (e) {
+                            status.style.display = 'block';
+                            status.style.background = '#f8d7da';
+                            status.style.color = '#721c24';
+                            status.textContent = '✗ Invalid JSON: ' + e.message;
+                        }
+                    });
+
+                    minifyBtn.addEventListener('click', () => {
+                        try {
+                            const obj = JSON.parse(input.value);
+                            output.value = JSON.stringify(obj);
+                            status.style.display = 'block';
+                            status.style.background = '#d4edda';
+                            status.style.color = '#155724';
+                            status.textContent = '✓ Valid JSON - Minified';
+                        } catch (e) {
+                            status.style.display = 'block';
+                            status.style.background = '#f8d7da';
+                            status.style.color = '#721c24';
+                            status.textContent = '✗ Invalid JSON: ' + e.message;
+                        }
+                    });
+
+                    validateBtn.addEventListener('click', () => {
+                        try {
+                            JSON.parse(input.value);
+                            status.style.display = 'block';
+                            status.style.background = '#d4edda';
+                            status.style.color = '#155724';
+                            status.textContent = '✓ Valid JSON!';
+                            output.value = '';
+                        } catch (e) {
+                            status.style.display = 'block';
+                            status.style.background = '#f8d7da';
+                            status.style.color = '#721c24';
+                            status.textContent = '✗ Invalid JSON: ' + e.message;
+                        }
+                    });
+                }
+            },
+
+            notepad: {
+                render: (container) => {
+                    container.innerHTML = `
+                        <h2>📝 NotePad</h2>
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; flex-wrap:wrap; gap:0.5rem;">
+                            <span id="charCount" style="font-size:0.9rem;">0 characters</span>
+                            <span id="saveTime" style="font-size:0.8rem; color:#666;"></span>
+                        </div>
+                        <textarea id="notes" placeholder="Write your notes here... (auto-saves)" rows="12" style="width:100%; padding:0.8rem; font-family:monospace;"></textarea>
+                        <div style="display:flex; gap:0.5rem; margin-top:1rem; flex-wrap:wrap;">
+                            <button id="saveNotes" class="primary-btn" style="flex:1; padding:0.8rem;">💾 Save</button>
+                            <button id="downloadNotes" style="flex:1; padding:0.8rem;">📥 Download</button>
+                            <button id="clearNotes" style="flex:1; padding:0.8rem;">🗑️ Clear</button>
+                        </div>
+                    `;
+
+                    const notes = container.querySelector('#notes');
+                    const saveBtn = container.querySelector('#saveNotes');
+                    const downloadBtn = container.querySelector('#downloadNotes');
+                    const clearBtn = container.querySelector('#clearNotes');
+                    const charCount = container.querySelector('#charCount');
+                    const saveTime = container.querySelector('#saveTime');
+
+                    // Load saved notes
+                    notes.value = localStorage.getItem('haqutility_notes') || '';
+                    const lastSaved = localStorage.getItem('haqutility_notes_time');
+                    if (lastSaved) {
+                        saveTime.textContent = 'Last saved: ' + new Date(parseInt(lastSaved)).toLocaleString();
+                    }
+
+                    // Update character count
+                    function updateCount() {
+                        charCount.textContent = notes.value.length + ' characters';
+                    }
+                    notes.addEventListener('input', updateCount);
+                    updateCount();
+
+                    // Auto-save every 30 seconds
+                    let autoSaveTimer;
+                    notes.addEventListener('input', () => {
+                        clearTimeout(autoSaveTimer);
+                        autoSaveTimer = setTimeout(() => {
+                            localStorage.setItem('haqutility_notes', notes.value);
+                            localStorage.setItem('haqutility_notes_time', Date.now());
+                            saveTime.textContent = 'Auto-saved: ' + new Date().toLocaleTimeString();
+                        }, 30000);
+                    });
+
+                    saveBtn.addEventListener('click', () => {
+                        localStorage.setItem('haqutility_notes', notes.value);
+                        localStorage.setItem('haqutility_notes_time', Date.now());
+                        saveTime.textContent = 'Saved: ' + new Date().toLocaleTimeString();
+                        showToast('Notes saved!');
+                    });
+
+                    downloadBtn.addEventListener('click', () => {
+                        const blob = new Blob([notes.value], { type: 'text/plain' });
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = 'haq-notes-' + new Date().toISOString().slice(0,10) + '.txt';
+                        a.click();
+                        URL.revokeObjectURL(url);
+                    });
+
+                    clearBtn.addEventListener('click', () => {
+                        if (confirm('Are you sure you want to clear all notes?')) {
+                            notes.value = '';
+                            localStorage.removeItem('haqutility_notes');
+                            localStorage.removeItem('haqutility_notes_time');
+                            saveTime.textContent = '';
+                            updateCount();
+                            showToast('Notes cleared');
+                        }
+                    });
+                }
+            },
+
+            pomodoroTimer: {
+                render: (container) => {
+                    container.innerHTML = `
+                        <h2>🍅 Pomodoro Timer</h2>
+                        <div class="pomodoro-container">
+                            <div class="timer-mode">
+                                <button class="mode-btn active" data-mode="work" data-time="25">Work (25min)</button>
+                                <button class="mode-btn" data-mode="short" data-time="5">Short Break (5min)</button>
+                                <button class="mode-btn" data-mode="long" data-time="15">Long Break (15min)</button>
+                            </div>
+                            <div class="timer-display" id="pomodoroDisplay">25:00</div>
+                            <div class="timer-controls">
+                                <button id="pomodoroStart" class="primary-btn">▶️ Start</button>
+                                <button id="pomodoroPause">⏸️ Pause</button>
+                                <button id="pomodoroReset">🔄 Reset</button>
+                            </div>
+                            <p style="margin-top:1rem; color:#666;">Sessions completed: <span id="sessionCount">0</span></p>
+                        </div>
+                    `;
+
+                    let timeLeft = 25 * 60;
+                    let currentMode = 'work';
+                    let timerInterval = null;
+                    let isRunning = false;
+                    let sessions = parseInt(localStorage.getItem('pomodoroSessions') || '0');
+
+                    const display = container.querySelector('#pomodoroDisplay');
+                    const startBtn = container.querySelector('#pomodoroStart');
+                    const pauseBtn = container.querySelector('#pomodoroPause');
+                    const resetBtn = container.querySelector('#pomodoroReset');
+                    const modeButtons = container.querySelectorAll('.mode-btn');
+                    const sessionCount = container.querySelector('#sessionCount');
+
+                    sessionCount.textContent = sessions;
+
+                    function updateDisplay() {
+                        const minutes = Math.floor(timeLeft / 60);
+                        const seconds = timeLeft % 60;
+                        display.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                    }
+
+                    function startTimer() {
+                        if (isRunning) return;
+                        isRunning = true;
+                        
+                        timerInterval = setInterval(() => {
+                            timeLeft--;
+                            updateDisplay();
+
+                            if (timeLeft <= 0) {
+                                clearInterval(timerInterval);
+                                isRunning = false;
+                                
+                                if (currentMode === 'work') {
+                                    sessions++;
+                                    localStorage.setItem('pomodoroSessions', sessions);
+                                    sessionCount.textContent = sessions;
+                                }
+
+                                showToast('Timer complete! 🎉');
+                                if ('Notification' in window && Notification.permission === 'granted') {
+                                    new Notification('Pomodoro Timer', { body: 'Timer complete!' });
+                                }
+                            }
+                        }, 1000);
+                    }
+
+                    function pauseTimer() {
+                        clearInterval(timerInterval);
+                        isRunning = false;
+                    }
+
+                    function resetTimer() {
+                        clearInterval(timerInterval);
+                        isRunning = false;
+                        const activeMode = container.querySelector('.mode-btn.active');
+                        timeLeft = parseInt(activeMode.dataset.time) * 60;
+                        updateDisplay();
+                    }
+
+                    startBtn.addEventListener('click', startTimer);
+                    pauseBtn.addEventListener('click', pauseTimer);
+                    resetBtn.addEventListener('click', resetTimer);
+
+                    modeButtons.forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            modeButtons.forEach(b => b.classList.remove('active'));
+                            btn.classList.add('active');
+                            currentMode = btn.dataset.mode;
+                            pauseTimer();
+                            timeLeft = parseInt(btn.dataset.time) * 60;
+                            updateDisplay();
+                        });
+                    });
+
+                    // Request notification permission
+                    if ('Notification' in window && Notification.permission === 'default') {
+                        Notification.requestPermission();
+                    }
+                }
+            },
+
+            stopwatch: {
+                render: (container) => {
+                    container.innerHTML = `
+                        <h2>⏱️ Stopwatch</h2>
+                        <div style="text-align:center;">
+                            <div style="font-size:2.5rem; font-weight:bold; font-family:monospace; margin:2rem 0; color:#00796b;" id="stopwatchDisplay">00:00:00.000</div>
+                            <div style="display:flex; gap:0.5rem; justify-content:center; flex-wrap:wrap;">
+                                <button id="stopwatchStart" class="primary-btn" style="padding:0.8rem 1.5rem;">▶️ Start</button>
+                                <button id="stopwatchPause" style="padding:0.8rem 1.5rem;">⏸️ Pause</button>
+                                <button id="stopwatchReset" style="padding:0.8rem 1.5rem;">🔄 Reset</button>
+                                <button id="stopwatchLap" style="padding:0.8rem 1.5rem;">🏁 Lap</button>
+                            </div>
+                            <div id="laps" style="margin-top:2rem; text-align:left; max-height:200px; overflow-y:auto;"></div>
+                        </div>
+                    `;
+
+                    let startTime = 0;
+                    let elapsedTime = 0;
+                    let timerInterval = null;
+                    let isRunning = false;
+                    let lapCount = 0;
+
+                    const display = container.querySelector('#stopwatchDisplay');
+                    const startBtn = container.querySelector('#stopwatchStart');
+                    const pauseBtn = container.querySelector('#stopwatchPause');
+                    const resetBtn = container.querySelector('#stopwatchReset');
+                    const lapBtn = container.querySelector('#stopwatchLap');
+                    const lapsDiv = container.querySelector('#laps');
+
+                    function updateDisplay() {
+                        const time = isRunning ? Date.now() - startTime + elapsedTime : elapsedTime;
+                        
+                        const ms = time % 1000;
+                        const s = Math.floor(time / 1000) % 60;
+                        const m = Math.floor(time / 60000) % 60;
+                        const h = Math.floor(time / 3600000);
+
+                        display.textContent = 
+                            `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}.${ms.toString().padStart(3, '0')}`;
+                    }
+
+                    startBtn.addEventListener('click', () => {
+                        if (!isRunning) {
+                            startTime = Date.now();
+                            isRunning = true;
+                            timerInterval = setInterval(updateDisplay, 10);
+                        }
+                    });
+
+                    pauseBtn.addEventListener('click', () => {
+                        if (isRunning) {
+                            clearInterval(timerInterval);
+                            elapsedTime += Date.now() - startTime;
+                            isRunning = false;
+                        }
+                    });
+
+                    resetBtn.addEventListener('click', () => {
+                        clearInterval(timerInterval);
+                        startTime = 0;
+                        elapsedTime = 0;
+                        isRunning = false;
+                        lapCount = 0;
+                        lapsDiv.innerHTML = '';
+                        updateDisplay();
+                    });
+
+                    lapBtn.addEventListener('click', () => {
+                        if (isRunning || elapsedTime > 0) {
+                            lapCount++;
+                            const lapTime = display.textContent;
+                            const lapDiv = document.createElement('div');
+                            lapDiv.style.padding = '0.5rem';
+                            lapDiv.style.borderBottom = '1px solid #ddd';
+                            lapDiv.innerHTML = `<strong>Lap ${lapCount}:</strong> ${lapTime}`;
+                            lapsDiv.insertBefore(lapDiv, lapsDiv.firstChild);
+                        }
+                    });
+                }
+            },
+
+            qrCodeGenerator: {
+                render: (container) => {
+                    container.innerHTML = `
+                        <h2>📱 QR Code Generator</h2>
+                        <p style="margin-bottom:1rem;">Enter text or URL to generate QR code</p>
+                        <input type="text" id="qrText" placeholder="Enter text or URL..." style="width:100%; padding:0.8rem; margin-bottom:1rem;" />
+                        <div style="display:flex; gap:0.5rem; margin-bottom:1rem;">
+                            <label style="flex:1;">
+                                Size: 
+                                <select id="qrSize" style="width:100%; padding:0.5rem; margin-top:0.3rem;">
+                                    <option value="150">Small (150x150)</option>
+                                    <option value="250" selected>Medium (250x250)</option>
+                                    <option value="400">Large (400x400)</option>
+                                </select>
+                            </label>
+                        </div>
+                        <div style="text-align:center; padding:2rem; background:#f5f5f5; border-radius:8px; min-height:300px; display:flex; align-items:center; justify-content:center;">
+                            <img id="qrImage" src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=HAQ%20Utility" alt="QR Code" style="max-width:100%; border-radius:8px; box-shadow:0 2px 10px rgba(0,0,0,0.2);" />
+                        </div>
+                        <button id="downloadQr" style="width:100%; padding:0.8rem; margin-top:1rem;">📥 Download QR Code</button>
+                    `;
+
+                    const input = container.querySelector('#qrText');
+                    const sizeSelect = container.querySelector('#qrSize');
+                    const img = container.querySelector('#qrImage');
+                    const downloadBtn = container.querySelector('#downloadQr');
+
+                    function generateQR() {
+                        const text = input.value.trim() || 'HAQ Utility';
+                        const size = sizeSelect.value;
+                        img.src = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(text)}`;
+                    }
+
+                    input.addEventListener('input', generateQR);
+                    sizeSelect.addEventListener('change', generateQR);
+
+                    downloadBtn.addEventListener('click', () => {
+                        const link = document.createElement('a');
+                        link.href = img.src;
+                        link.download = 'haq-qrcode.png';
+                        link.click();
+                    });
+                }
+            },
+
+            colorGenerator: {
+                render: (container) => {
+                    container.innerHTML = `
+                        <h2>🎨 Color Palette Generator</h2>
+                        <p style="margin-bottom:1rem;">Generate beautiful random color palettes</p>
+                        <button id="generatePalette" class="primary-btn" style="width:100%; padding:0.8rem; margin-bottom:1rem;">🎲 Generate New Palette</button>
+                        <div id="paletteDisplay" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(100px, 1fr)); gap:1rem; margin-bottom:1rem;"></div>
+                        <button id="exportPalette" style="width:100%; padding:0.8rem;">📋 Copy All Colors</button>
+                    `;
+
+                    const generateBtn = container.querySelector('#generatePalette');
+                    const paletteDiv = container.querySelector('#paletteDisplay');
+                    const exportBtn = container.querySelector('#exportPalette');
+                    let currentColors = [];
+
+                    function randomColor() {
+                        return '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0');
+                    }
+
+                    function generatePalette() {
+                        currentColors = [];
+                        paletteDiv.innerHTML = '';
+                        
+                        for (let i = 0; i < 5; i++) {
+                            const color = randomColor();
+                            currentColors.push(color);
+                            
+                            const colorDiv = document.createElement('div');
+                            colorDiv.style.background = color;
+                            colorDiv.style.height = '120px';
+                            colorDiv.style.borderRadius = '8px';
+                                                       colorDiv.style.display = 'flex';
+                            colorDiv.style.alignItems = 'flex-end';
+                            colorDiv.style.justifyContent = 'center';
+                            colorDiv.style.padding = '0.5rem';
+                            colorDiv.style.cursor = 'pointer';
+                            colorDiv.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
+                            colorDiv.innerHTML = `<span style="background:rgba(255,255,255,0.9); padding:0.3rem 0.6rem; border-radius:4px; font-family:monospace; font-size:0.9rem;">${color}</span>`;
+                            
+                            colorDiv.addEventListener('click', () => {
+                                navigator.clipboard.writeText(color);
+                                showToast(`Copied ${color}`);
+                            });
+                            
+                            paletteDiv.appendChild(colorDiv);
+                        }
+                    }
+
+                    generateBtn.addEventListener('click', generatePalette);
+                    exportBtn.addEventListener('click', () => {
+                        navigator.clipboard.writeText(currentColors.join('\n'));
+                        showToast('All colors copied!');
+                    });
+
+                    generatePalette(); // Auto-generate on open
+                }
+            },
+
+            loremGenerator: {
+                render: (container) => {
+                    container.innerHTML = `
+                        <h2>📄 Lorem Ipsum Generator</h2>
+                        <p style="margin-bottom:1rem;">Generate placeholder text</p>
+                        <div style="margin-bottom:1rem;">
+                            <label>Type:
+                                <select id="loremType" style="width:100%; padding:0.8rem; margin-top:0.5rem;">
+                                    <option value="paragraphs">Paragraphs</option>
+                                    <option value="sentences">Sentences</option>
+                                    <option value="words">Words</option>
+                                </select>
+                            </label>
+                        </div>
+                        <div style="margin-bottom:1rem;">
+                            <label>Count: <input type="number" id="loremCount" value="3" min="1" max="50" style="width:100%; padding:0.8rem; margin-top:0.5rem;"></label>
+                        </div>
+                        <button id="generateLorem" class="primary-btn" style="width:100%; padding:0.8rem; margin-bottom:1rem;">Generate</button>
+                        <textarea id="loremOutput" readonly rows="10" style="width:100%; padding:0.8rem;"></textarea>
+                        <button id="copyLorem" style="width:100%; padding:0.8rem; margin-top:0.5rem;">📋 Copy Text</button>
+                    `;
+
+                    const lorem = "Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua Ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur Excepteur sint occaecat cupidatat non proident sunt in culpa qui officia deserunt mollit anim id est laborum";
+                    const words = lorem.split(' ');
+
+                    const typeSelect = container.querySelector('#loremType');
+                    const countInput = container.querySelector('#loremCount');
+                    const generateBtn = container.querySelector('#generateLorem');
+                    const output = container.querySelector('#loremOutput');
+                    const copyBtn = container.querySelector('#copyLorem');
+
+                    function generate() {
+                        const type = typeSelect.value;
+                        const count = parseInt(countInput.value);
+                        let result = '';
+
+                        if (type === 'words') {
+                            for (let i = 0; i < count; i++) {
+                                result += words[Math.floor(Math.random() * words.length)] + ' ';
+                            }
+                        } else if (type === 'sentences') {
+                            for (let i = 0; i < count; i++) {
+                                const sentenceLength = 10 + Math.floor(Math.random() * 10);
+                                let sentence = '';
+                                for (let j = 0; j < sentenceLength; j++) {
+                                    sentence += words[Math.floor(Math.random() * words.length)] + ' ';
+                                }
+                                result += sentence.charAt(0).toUpperCase() + sentence.slice(1).trim() + '. ';
+                            }
+                        } else {
+                            for (let i = 0; i < count; i++) {
+                                const paragraphLength = 5 + Math.floor(Math.random() * 5);
+                                let paragraph = '';
+                                for (let j = 0; j < paragraphLength; j++) {
+                                    const sentenceLength = 10 + Math.floor(Math.random() * 10);
+                                    let sentence = '';
+                                    for (let k = 0; k < sentenceLength; k++) {
+                                        sentence += words[Math.floor(Math.random() * words.length)] + ' ';
+                                    }
+                                    paragraph += sentence.charAt(0).toUpperCase() + sentence.slice(1).trim() + '. ';
+                                }
+                                result += paragraph + '\n\n';
+                            }
+                        }
+
+                        output.value = result.trim();
+                    }
+
+                    generateBtn.addEventListener('click', generate);
+                    copyBtn.addEventListener('click', () => {
+                        if (output.value) {
+                            navigator.clipboard.writeText(output.value);
+                            showToast('Text copied!');
+                        }
+                    });
+
+                    generate(); // Auto-generate
+                }
+            },
+
+            imageEditor: {
+                render: (container) => {
+                    container.innerHTML = `
+                        <h2>🖼️ Image Editor</h2>
+                        
+                        <!-- Upload Section -->
+                        <div class="upload-section" id="uploadSection">
+                            <input type="file" id="imageUpload" accept="image/*" style="display:none;" />
+                            <button id="uploadBtn" class="primary-btn" style="padding:1rem 2rem;">📁 Upload Image</button>
+                            <p style="margin-top:0.5rem; color:#666;">or drag & drop</p>
+                        </div>
+
+                        <!-- Editor Section (hidden initially) -->
+                        <div id="editorSection" style="display:none;">
+                            <!-- Canvas -->
+                            <div class="canvas-container">
+                                <canvas id="imageCanvas"></canvas>
+                            </div>
+
+                            <!-- Tools Tabs -->
+                            <div class="editor-tabs">
+                                <button class="tab-btn active" data-tab="basic">Basic</button>
+                                <button class="tab-btn" data-tab="filters">Filters</button>
+                                <button class="tab-btn" data-tab="adjust">Adjust</button>
+                                <button class="tab-btn" data-tab="draw">Draw</button>
+                            </div>
+
+                            <!-- Basic Tools -->
+                            <div class="tool-panel active" data-panel="basic">
+                                <button class="tool-btn" data-action="rotate-left">↶ Rotate Left</button>
+                                <button class="tool-btn" data-action="rotate-right">↷ Rotate Right</button>
+                                <button class="tool-btn" data-action="flip-h">⇄ Flip H</button>
+                                <button class="tool-btn" data-action="flip-v">⇅ Flip V</button>
+                                <div class="resize-controls">
+                                    <input type="number" id="resizeWidth" placeholder="Width" />
+                                    <input type="number" id="resizeHeight" placeholder="Height" />
+                                    <button class="tool-btn" data-action="resize">📏 Resize</button>
+                                </div>
+                            </div>
+
+                            <!-- Filters -->
+                            <div class="tool-panel" data-panel="filters">
+                                <button class="tool-btn" data-filter="grayscale">⚪ Grayscale</button>
+                                <button class="tool-btn" data-filter="sepia">🟤 Sepia</button>
+                                <button class="tool-btn" data-filter="invert">🔄 Invert</button>
+                                <button class="tool-btn" data-filter="vintage">📷 Vintage</button>
+                            </div>
+
+                            <!-- Adjustments -->
+                            <div class="tool-panel" data-panel="adjust">
+                                <label>
+                                    Brightness: <input type="range" id="brightness" min="-100" max="100" value="0" />
+                                    <span id="brightnessVal">0</span>
+                                </label>
+                                <label>
+                                    Contrast: <input type="range" id="contrast" min="-100" max="100" value="0" />
+                                    <span id="contrastVal">0</span>
+                                </label>
+                                <button class="tool-btn" data-action="apply-adjustments">✓ Apply</button>
+                            </div>
+
+                            <!-- Draw Tools -->
+                            <div class="tool-panel" data-panel="draw">
+                                <label>
+                                    Pen Color: <input type="color" id="penColor" value="#ff0000" />
+                                </label>
+                                <label>
+                                    Pen Size: <input type="range" id="penSize" min="1" max="20" value="5" />
+                                    <span id="penSizeVal">5</span>
+                                </label>
+                                <button class="tool-btn active" id="drawBtn">✏️ Draw</button>
+                                <button class="tool-btn" id="eraserBtn">🧹 Eraser</button>
+                                <button class="tool-btn" data-action="clear-draw">🗑️ Clear Drawing</button>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="action-buttons">
+                                <button id="resetBtn">↺ Reset</button>
+                                <button id="downloadBtn" class="primary-btn">💾 Download</button>
+                                <button id="newImageBtn">🆕 New Image</button>
+                            </div>
+                        </div>
+                    `;
+
+                    const uploadSection = container.querySelector('#uploadSection');
+                    const editorSection = container.querySelector('#editorSection');
+                    const imageUpload = container.querySelector('#imageUpload');
+                    const uploadBtn = container.querySelector('#uploadBtn');
+                    const canvas = container.querySelector('#imageCanvas');
+                    const ctx = canvas.getContext('2d');
+
+                    let originalImage = null;
+                    let currentImage = null;
+                    let isDrawing = false;
+                    let drawMode = false;
+                    let eraserMode = false;
+
+                    uploadBtn.addEventListener('click', () => imageUpload.click());
+
+                    imageUpload.addEventListener('change', (e) => {
+                        const file = e.target.files[0];
+                        if (file) loadImage(file);
+                    });
+
+                    uploadSection.addEventListener('dragover', (e) => {
+                        e.preventDefault();
+                        uploadSection.style.background = 'rgba(0, 121, 107, 0.2)';
+                    });
+
+                    uploadSection.addEventListener('dragleave', () => {
+                        uploadSection.style.background = '';
+                    });
+
+                    uploadSection.addEventListener('drop', (e) => {
+                        e.preventDefault();
+                        uploadSection.style.background = '';
+                        const file = e.dataTransfer.files[0];
+                        if (file && file.type.startsWith('image/')) {
+                            loadImage(file);
+                        }
+                    });
+
+                    function loadImage(file) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            const img = new Image();
+                            img.onload = () => {
+                                originalImage = img;
+                                currentImage = img;
+                                canvas.width = img.width;
+                                canvas.height = img.height;
+                                ctx.drawImage(img, 0, 0);
+                                
+                                uploadSection.style.display = 'none';
+                                editorSection.style.display = 'block';
+                                
+                                container.querySelector('#resizeWidth').value = img.width;
+                                container.querySelector('#resizeHeight').value = img.height;
+                            };
+                            img.src = e.target.result;
+                        };
+                        reader.readAsDataURL(file);
+                    }
+
+                    container.querySelectorAll('.tab-btn').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            container.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                            container.querySelectorAll('.tool-panel').forEach(p => p.classList.remove('active'));
+                            
+                            btn.classList.add('active');
+                            const panel = container.querySelector(`[data-panel="${btn.dataset.tab}"]`);
+                            if (panel) panel.classList.add('active');
+                        });
+                    });
+
+                    container.querySelectorAll('[data-action]').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            const action = btn.dataset.action;
+                            
+                            switch(action) {
+                                case 'rotate-left':
+                                    rotateImage(-90);
+                                    break;
+                                case 'rotate-right':
+                                    rotateImage(90);
+                                    break;
+                                case 'flip-h':
+                                    flipImage('horizontal');
+                                    break;
+                                case 'flip-v':
+                                    flipImage('vertical');
+                                    break;
+                                case 'resize':
+                                    resizeImage();
+                                    break;
+                                case 'apply-adjustments':
+                                    applyAdjustments();
+                                    break;
+                                case 'clear-draw':
+                                    ctx.drawImage(currentImage, 0, 0);
+                                    break;
+                            }
+                        });
+                    });
+
+                    container.querySelectorAll('[data-filter]').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            applyFilter(btn.dataset.filter);
+                        });
+                    });
+
+                    function rotateImage(degrees) {
+                        const tempCanvas = document.createElement('canvas');
+                        const tempCtx = tempCanvas.getContext('2d');
+                        
+                        if (degrees === 90 || degrees === -90) {
+                            tempCanvas.width = canvas.height;
+                            tempCanvas.height = canvas.width;
+                        } else {
+                            tempCanvas.width = canvas.width;
+                            tempCanvas.height = canvas.height;
+                        }
+                        
+                        tempCtx.translate(tempCanvas.width / 2, tempCanvas.height / 2);
+                        tempCtx.rotate(degrees * Math.PI / 180);
+                        tempCtx.drawImage(canvas, -canvas.width / 2, -canvas.height / 2);
+                        
+                        canvas.width = tempCanvas.width;
+                        canvas.height = tempCanvas.height;
+                        ctx.drawImage(tempCanvas, 0, 0);
+                        updateCurrentImage();
+                    }
+
+                    function flipImage(direction) {
+                        const tempCanvas = document.createElement('canvas');
+                        const tempCtx = tempCanvas.getContext('2d');
+                        tempCanvas.width = canvas.width;
+                        tempCanvas.height = canvas.height;
+                        
+                        tempCtx.save();
+                        if (direction === 'horizontal') {
+                            tempCtx.scale(-1, 1);
+                            tempCtx.drawImage(canvas, -canvas.width, 0);
+                        } else {
+                            tempCtx.scale(1, -1);
+                            tempCtx.drawImage(canvas, 0, -canvas.height);
+                        }
+                        tempCtx.restore();
+                        
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                        ctx.drawImage(tempCanvas, 0, 0);
+                        updateCurrentImage();
+                    }
+
+                    function resizeImage() {
+                        const width = parseInt(container.querySelector('#resizeWidth').value);
+                        const height = parseInt(container.querySelector('#resizeHeight').value);
+                        
+                        if (width > 0 && height > 0) {
+                            const tempCanvas = document.createElement('canvas');
+                            const tempCtx = tempCanvas.getContext('2d');
+                            tempCanvas.width = width;
+                            tempCanvas.height = height;
+                            tempCtx.drawImage(canvas, 0, 0, width, height);
+                            
+                            canvas.width = width;
+                            canvas.height = height;
+                            ctx.drawImage(tempCanvas, 0, 0);
+                            updateCurrentImage();
+                        }
+                    }
+
+                    function applyFilter(filter) {
+                        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                        const data = imageData.data;
+                        
+                        for (let i = 0; i < data.length; i += 4) {
+                            const r = data[i];
+                            const g = data[i + 1];
+                            const b = data[i + 2];
+                            
+                            switch(filter) {
+                                case 'grayscale':
+                                    const gray = 0.299 * r + 0.587 * g + 0.114 * b;
+                                    data[i] = data[i + 1] = data[i + 2] = gray;
+                                    break;
+                                case 'sepia':
+                                    data[i] = Math.min(255, r * 0.393 + g * 0.769 + b * 0.189);
+                                    data[i + 1] = Math.min(255, r * 0.349 + g * 0.686 + b * 0.168);
+                                    data[i + 2] = Math.min(255, r * 0.272 + g * 0.534 + b * 0.131);
+                                    break;
+                                case 'invert':
+                                    data[i] = 255 - r;
+                                    data[i + 1] = 255 - g;
+                                    data[i + 2] = 255 - b;
+                                    break;
+                                case 'vintage':
+                                    data[i] = Math.min(255, r * 1.2);
+                                    data[i + 1] = Math.min(255, g * 0.9);
+                                    data[i + 2] = Math.min(255, b * 0.7);
+                                    break;
+                            }
+                        }
+                        
+                        ctx.putImageData(imageData, 0, 0);
+                        updateCurrentImage();
+                    }
+
+                    function applyAdjustments() {
+                        const brightness = parseInt(container.querySelector('#brightness').value);
+                        const contrast = parseInt(container.querySelector('#contrast').value);
+                        
+                        ctx.drawImage(currentImage, 0, 0);
+                        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                        const data = imageData.data;
+                        
+                        const contrastFactor = (259 * (contrast + 255)) / (255 * (259 - contrast));
+                        
+                        for (let i = 0; i < data.length; i += 4) {
+                            data[i] += brightness;
+                            data[i + 1] += brightness;
+                            data[i + 2] += brightness;
+                            
+                            data[i] = contrastFactor * (data[i] - 128) + 128;
+                            data[i + 1] = contrastFactor * (data[i + 1] - 128) + 128;
+                            data[i + 2] = contrastFactor * (data[i + 2] - 128) + 128;
+                            
+                            data[i] = Math.max(0, Math.min(255, data[i]));
+                            data[i + 1] = Math.max(0, Math.min(255, data[i + 1]));
+                            data[i + 2] = Math.max(0, Math.min(255, data[i + 2]));
+                        }
+                        
+                        ctx.putImageData(imageData, 0, 0);
+                        updateCurrentImage();
+                    }
+
+                    const drawBtn = container.querySelector('#drawBtn');
+                    const eraserBtn = container.querySelector('#eraserBtn');
+                    const penColor = container.querySelector('#penColor');
+                    const penSize = container.querySelector('#penSize');
+                    const penSizeVal = container.querySelector('#penSizeVal');
+
+                    penSize.addEventListener('input', () => {
+                        penSizeVal.textContent = penSize.value;
+                    });
+
+                    drawBtn.addEventListener('click', () => {
+                        drawMode = true;
+                        eraserMode = false;
+                        drawBtn.classList.add('active');
+                        eraserBtn.classList.remove('active');
+                    });
+
+                    eraserBtn.addEventListener('click', () => {
+                        eraserMode = true;
+                        drawMode = false;
+                        eraserBtn.classList.add('active');
+                        drawBtn.classList.remove('active');
+                    });
+
+                    canvas.addEventListener('mousedown', startDrawing);
+                    canvas.addEventListener('mousemove', draw);
+                    canvas.addEventListener('mouseup', stopDrawing);
+                    canvas.addEventListener('mouseout', stopDrawing);
+
+                    canvas.addEventListener('touchstart', (e) => {
+                        e.preventDefault();
+                        const touch = e.touches[0];
+                        const rect = canvas.getBoundingClientRect();
+                        const mouseEvent = new MouseEvent('mousedown', {
+                            clientX: touch.clientX,
+                            clientY: touch.clientY
+                        });
+                        canvas.dispatchEvent(mouseEvent);
+                    });
+
+                    canvas.addEventListener('touchmove', (e) => {
+                        e.preventDefault();
+                        const touch = e.touches[0];
+                        const mouseEvent = new MouseEvent('mousemove', {
+                            clientX: touch.clientX,
+                            clientY: touch.clientY
+                        });
+                        canvas.dispatchEvent(mouseEvent);
+                    });
+
+                    canvas.addEventListener('touchend', (e) => {
+                        e.preventDefault();
+                        canvas.dispatchEvent(new MouseEvent('mouseup'));
+                    });
+
+                    function startDrawing(e) {
+                        if (!drawMode && !eraserMode) return;
+                        isDrawing = true;
+                        const rect = canvas.getBoundingClientRect();
+                        const x = e.clientX - rect.left;
+                        const y = e.clientY - rect.top;
+                        
+                        ctx.beginPath();
+                        ctx.moveTo(x, y);
+                    }
+
+                    function draw(e) {
+                        if (!isDrawing) return;
+                        
+                        const rect = canvas.getBoundingClientRect();
+                        const x = e.clientX - rect.left;
+                        const y = e.clientY - rect.top;
+                        
+                        ctx.lineWidth = penSize.value;
+                        ctx.lineCap = 'round';
+                        
+                        if (eraserMode) {
+                            ctx.globalCompositeOperation = 'destination-out';
+                        } else {
+                            ctx.globalCompositeOperation = 'source-over';
+                            ctx.strokeStyle = penColor.value;
+                        }
+                        
+                        ctx.lineTo(x, y);
+                        ctx.stroke();
+                    }
+
+                    function stopDrawing() {
+                        if (!isDrawing) return;
+                        isDrawing = false;
+                        ctx.globalCompositeOperation = 'source-over';
+                    }
+
+                    function updateCurrentImage() {
+                        const img = new Image();
+                        img.onload = () => {
+                            currentImage = img;
+                        };
+                        img.src = canvas.toDataURL();
+                    }
+
+                    ['brightness', 'contrast'].forEach(id => {
+                        const slider = container.querySelector(`#${id}`);
+                        const display = container.querySelector(`#${id}Val`);
+                        if (slider && display) {
+                            slider.addEventListener('input', () => {
+                                display.textContent = slider.value;
+                            });
+                        }
+                    });
+
+                    container.querySelector('#resetBtn').addEventListener('click', () => {
+                        canvas.width = originalImage.width;
+                        canvas.height = originalImage.height;
+                        ctx.drawImage(originalImage, 0, 0);
+                        currentImage = originalImage;
+                        
+                        container.querySelector('#brightness').value = 0;
+                        container.querySelector('#contrast').value = 0;
+                        container.querySelectorAll('[id$="Val"]').forEach(el => el.textContent = '0');
+                    });
+
+                    container.querySelector('#downloadBtn').addEventListener('click', () => {
+                        const link = document.createElement('a');
+                        link.download = 'haq-edited-image.png';
+                        link.href = canvas.toDataURL();
+                        link.click();
+                    });
+
+                    container.querySelector('#newImageBtn').addEventListener('click', () => {
+                        editorSection.style.display = 'none';
+                        uploadSection.style.display = 'block';
+                        imageUpload.value = '';
+                    });
+                }
+            }
+        };
+
+        // ===== APP INITIALIZATION =====
+        document.addEventListener('DOMContentLoaded', () => {
+            const toolModal = document.getElementById('toolModal');
+            const toolContainer = document.getElementById('toolContainer');
+            const closeBtn = toolModal.querySelector('.close-btn');
+            const darkModeToggle = document.getElementById('darkModeToggle');
+            const settingsBtn = document.getElementById('settingsBtn');
+            const settingsModal = document.getElementById('settingsModal');
+            const closeSettings = document.getElementById('closeSettings');
+            const toolSearch = document.getElementById('toolSearch');
+            const allTools = document.getElementById('allTools');
+            const emptyState = document.getElementById('emptyState');
+            const recentSection = document.getElementById('recentSection');
+            const recentTools = document.getElementById('recentTools');
+
+            let favorites = JSON.parse(localStorage.getItem('haqFavorites') || '[]');
+            let recentlyUsed = JSON.parse(localStorage.getItem('haqRecent') || '[]');
+
+            function updateFavorites() {
+                document.querySelectorAll('.favorite-btn').forEach(btn => {
+                    const toolName = btn.dataset.fav;
+                    if (favorites.includes(toolName)) {
+                        btn.classList.add('active');
+                        btn.textContent = '⭐';
+                    } else {
+                        btn.classList.remove('active');
+                        btn.textContent = '☆';
+                    }
+                });
+            }
+
+            document.querySelectorAll('.favorite-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const toolName = btn.dataset.fav;
+                    
+                    if (favorites.includes(toolName)) {
+                        favorites = favorites.filter(f => f !== toolName);
+                        btn.classList.remove('active');
+                        btn.textContent = '☆';
+                    } else {
+                        favorites.push(toolName);
+                        btn.classList.add('active');
+                        btn.textContent = '⭐';
+                    }
+                    
+                    localStorage.setItem('haqFavorites', JSON.stringify(favorites));
+                    showToast(favorites.includes(toolName) ? 'Added to favorites!' : 'Removed from favorites');
+                });
+            });
+
+            function openTool(name) {
+                toolContainer.innerHTML = '<p>Loading tool...</p>';
+                if(tools[name]) {
+                    tools[name].render(toolContainer);
+                    
+                    recentlyUsed = recentlyUsed.filter(t => t !== name);
+                    recentlyUsed.unshift(name);
+                    if (recentlyUsed.length > 5) recentlyUsed = recentlyUsed.slice(0, 5);
+                    localStorage.setItem('haqRecent', JSON.stringify(recentlyUsed));
+                    updateRecentTools();
+                } else {
+                    toolContainer.innerHTML = '<p>Tool not found.</p>';
+                }
+                toolModal.classList.remove('hidden');
+            }
+
+            function updateRecentTools() {
+                if (recentlyUsed.length > 0) {
+                    recentSection.style.display = 'block';
+                    recentTools.innerHTML = '';
+                    
+                    recentlyUsed.forEach(toolName => {
+                        const originalCard = document.querySelector(`[data-tool="${toolName}"]`);
+                        if (originalCard) {
+                            const clone = originalCard.cloneNode(true);
+                            const favBtn = clone.querySelector('.favorite-btn');
+                            const openBtn = clone.querySelector('.open-tool-btn');
+                            
+                            favBtn.addEventListener('click', (e) => {
+                                e.stopPropagation();
+                                const toolName = favBtn.dataset.fav;
+                                
+                                if (favorites.includes(toolName)) {
+                                    favorites = favorites.filter(f => f !== toolName);
+                                } else {
+                                    favorites.push(toolName);
+                                }
+                                
+                                localStorage.setItem('haqFavorites', JSON.stringify(favorites));
+                                updateFavorites();
+                                updateRecentTools();
+                                showToast(favorites.includes(toolName) ? 'Added to favorites!' : 'Removed from favorites');
+                            });
+                            
+                            openBtn.addEventListener('click', () => {
+                                openTool(toolName);
+                            });
+                            
+                            recentTools.appendChild(clone);
+                        }
+                    });
+                    updateFavorites();
+                } else {
+                    recentSection.style.display = 'none';
+                }
+            }
+
+            document.querySelectorAll('.open-tool-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const toolName = btn.closest('.tool-card').dataset.tool;
+                    openTool(toolName);
+                });
+            });
+
+            closeBtn.addEventListener('click', () => {
+                toolModal.classList.add('hidden');
+                toolContainer.innerHTML = '';
+            });
+
+            toolModal.addEventListener('click', (e) => {
+                if (e.target === toolModal) {
+                    toolModal.classList.add('hidden');
+                    toolContainer.innerHTML = '';
+                }
+            });
+
+            // Settings Modal
+            settingsBtn.addEventListener('click', () => {
+                settingsModal.classList.remove('hidden');
+                document.getElementById('settingsToolCount').textContent = document.querySelectorAll('.tool-card').length;
+            });
+
+            closeSettings.addEventListener('click', () => {
+                settingsModal.classList.add('hidden');
+            });
+
+            settingsModal.addEventListener('click', (e) => {
+                if (e.target === settingsModal) {
+                    settingsModal.classList.add('hidden');
+                }
+            });
+
+            document.getElementById('settingsDarkMode').addEventListener('click', () => {
+                darkModeToggle.click();
+            });
+
+            document.getElementById('clearFavorites').addEventListener('click', () => {
+                if (confirm('Clear all favorites?')) {
+                    favorites = [];
+                    localStorage.removeItem('haqFavorites');
+                    updateFavorites();
+                    showToast('Favorites cleared');
+                }
+            });
+
+            document.getElementById('clearRecent').addEventListener('click', () => {
+                if (confirm('Clear recent history?')) {
+                    recentlyUsed = [];
+                    localStorage.removeItem('haqRecent');
+                    updateRecentTools();
+                    showToast('Recent history cleared');
+                }
+            });
+
+            document.getElementById('clearAllData').addEventListener('click', () => {
+                if (confirm('Clear ALL data (Notes, Favorites, Recent)? This cannot be undone!')) {
+                    localStorage.clear();
+                    favorites = [];
+                    recentlyUsed = [];
+                    updateFavorites();
+                    updateRecentTools();
+                    showToast('All data cleared');
+                    settingsModal.classList.add('hidden');
+                }
+            });
+
+            toolSearch.addEventListener('input', () => {
+                const query = toolSearch.value.toLowerCase();
+                let visibleCount = 0;
+
+                document.querySelectorAll('#allTools .tool-card').forEach(card => {
+                    const title = card.querySelector('h2').textContent.toLowerCase();
+                    const category = card.dataset.category.toLowerCase();
+                    
+                    if (title.includes(query) || category.includes(query)) {
+                        card.classList.remove('hidden');
+                        visibleCount++;
+                    } else {
+                        card.classList.add('hidden');
+                    }
+                });
+
+                emptyState.style.display = visibleCount === 0 ? 'block' : 'none';
+            });
+
+            document.querySelectorAll('.menu-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+                    item.classList.add('active');
+                    
+                    const category = item.dataset.category;
+                    let visibleCount = 0;
+
+                    if (category === 'all') {
+                        document.querySelectorAll('#allTools .tool-card').forEach(card => {
+                            card.classList.remove('hidden');
+                            visibleCount++;
+                        });
+                    } else if (category === 'favorites') {
+                        document.querySelectorAll('#allTools .tool-card').forEach(card => {
+                            const toolName = card.dataset.tool;
+                            if (favorites.includes(toolName)) {
+                                card.classList.remove('hidden');
+                                visibleCount++;
+                            } else {
+                                card.classList.add('hidden');
+                            }
+                        });
+                    } else if (category === 'recent') {
+                        document.querySelectorAll('#allTools .tool-card').forEach(card => {
+                            const toolName = card.dataset.tool;
+                            if (recentlyUsed.includes(toolName)) {
+                                card.classList.remove('hidden');
+                                visibleCount++;
+                            } else {
+                                card.classList.add('hidden');
+                            }
+                        });
+                    } else {
+                        document.querySelectorAll('#allTools .tool-card').forEach(card => {
+                            if (card.dataset.category === category) {
+                                card.classList.remove('hidden');
+                                visibleCount++;
+                            } else {
+                                card.classList.add('hidden');
+                            }
+                        });
+                    }
+
+                    emptyState.style.display = visibleCount === 0 ? 'block' : 'none';
+                });
+            });
+
+            darkModeToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dark');
+                const isDark = document.body.classList.contains('dark');
+                darkModeToggle.textContent = isDark ? '☀️ Light Mode' : '🌙 Dark Mode';
+                localStorage.setItem('haqUtilityDarkMode', isDark ? 'true' : 'false');
+            });
+
+            if(localStorage.getItem('haqUtilityDarkMode') === 'true') {
+                document.body.classList.add('dark');
+                darkModeToggle.textContent = '☀️ Light Mode';
+            }
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && !toolModal.classList.contains('hidden')) {
+                    toolModal.classList.add('hidden');
+                    toolContainer.innerHTML = '';
+                }
+                
+                if (e.key === 'Escape' && !settingsModal.classList.contains('hidden')) {
+                    settingsModal.classList.add('hidden');
+                }
+                
+                if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                    e.preventDefault();
+                    toolSearch.focus();
+                }
+            });
+
+            updateFavorites();
+            updateRecentTools();
+
+            const toolCount = document.getElementById('toolCount');
+            toolCount.textContent = document.querySelectorAll('.tool-card').length;
+        });
+
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js')
+                .then(() => console.log('HAQ Utility PWA: Service Worker registered.'))
+                .catch(err => console.error('SW registration failed:', err));
+        }
+    </script>
+</body>
+</html>
+
