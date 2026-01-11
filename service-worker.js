@@ -3,7 +3,7 @@ self.addEventListener('install', function (e) {
     caches.open('haq-cache').then(function (cache) {
       return cache.addAll([
         './',
-        './tools.html',
+        './index.html',
         './style.css',
         './script.js',
         './manifest.json'
