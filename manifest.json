@@ -1,6 +1,6 @@
 {
-  "name": "HAQ Utility",
-  "short_name": "HAQ Tools",
+  "name": "Haq Utility",
+  "short_name": "Haqtools",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#111111",
