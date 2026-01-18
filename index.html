@@ -1,10 +1,15 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="HAQ Utility - All-in-One Productivity Toolkit with 20+ Professional Tools" />
+    <meta name="theme-color" content="#667eea" />
     <title>HAQ Utility - All-in-One Tools</title>
-    <link rel="manifest" href="manifest.json" />
+    <!-- Manifest will be injected via JavaScript -->
+    <link rel="manifest" href="#" id="app-manifest" />
+    <!-- Apple Touch Icon -->
+    <link rel="apple-touch-icon" href="1768555457995.jpg" />
     <style>
         /* ===== RESET & BASE STYLES ===== */
         * {
@@ -46,6 +51,17 @@
             }
         }
 
+        @keyframes slideInLeft {
+            from {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
         @keyframes pulse {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.05); }
@@ -64,6 +80,84 @@
         @keyframes confetti {
             0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
             100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        @keyframes menuItemSlide {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* ===== LOADING SCREEN ===== */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0,0,0,0.8), rgba(0,0,0,0.6)), url('1768555699242.jpg');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 99999;
+            transition: opacity 0.5s ease;
+        }
+
+        .loading-screen.hide {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loading-logo {
+            width: 150px;
+            height: 150px;
+            margin-bottom: 2rem;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .loading-title {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+            letter-spacing: -1px;
+        }
+
+        .loading-subtitle {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 3rem;
+            font-weight: 500;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 6px solid rgba(255, 255, 255, 0.2);
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
         }
 
         body {
@@ -179,54 +273,69 @@
             transform: translateY(0);
         }
 
-        /* Hamburger Menu Button */
+        /* Hamburger Menu Button - TOP LEFT */
         .hamburger-btn {
-            position: absolute !important;
-            right: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(255, 255, 255, 0.2) !important;
-            width: 45px;
-            height: 45px;
+            position: fixed !important;
+            left: 1rem;
+            top: 1rem;
+            z-index: 1001;
+            background: rgba(102, 126, 234, 0.9) !important;
+            width: 50px;
+            height: 50px;
             padding: 0 !important;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 12px !important;
+            border-radius: 15px !important;
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4) !important;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55) !important;
+        }
+
+        .hamburger-btn:hover {
+            transform: scale(1.1) rotate(90deg) !important;
+            box-shadow: 0 6pox 30px rgba(102, 126, 234, 0.6) !important;
         }
 
         .hamburger-icon {
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 5px;
         }
 
         .hamburger-icon span {
-            width: 20px;
-            height: 2px;
+            width: 24px;
+            height: 3px;
             background: white;
-            border-radius: 2px;
+            border-radius: 3px;
             transition: all 0.3s ease;
         }
 
-        /* Hamburger Menu Panel */
+        .hamburger-btn:hover .hamburger-icon span:nth-child(1) {
+            transform: translateX(-3px);
+        }
+
+        .hamburger-btn:hover .hamburger-icon span:nth-child(3) {
+            transform: translateX(3px);
+        }
+
+        /* Hamburger Menu Panel - SLIDES FROM LEFT */
         .hamburger-menu {
             position: fixed;
             top: 0;
-            right: -100%;
-            width: 320px;
-            max-width: 85%;
+            left: -100%;
+            width: 380px;
+            max-width: 90%;
             height: 100vh;
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.98);
             backdrop-filter: blur(20px);
-            box-shadow: -5px 0 30px rgba(0, 0, 0, 0.3);
+            box-shadow: 5px 0 30px rgba(0, 0, 0, 0.3);
             z-index: 1000;
-            transition: right 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            transition: left 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
             overflow-y: auto;
         }
 
         .hamburger-menu.active {
-            right: 0;
+            left: 0;
         }
 
         .menu-overlay {
@@ -235,11 +344,12 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.6);
             z-index: 999;
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.3s ease;
+            backdrop-filter: blur(3px);
         }
 
         .menu-overlay.active {
@@ -249,18 +359,20 @@
 
         .menu-header {
             padding: 2rem 1.5rem;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #f093fb 0%, #764ba2 100%);
             color: white;
+            position: relative;
         }
 
         .menu-header h2 {
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             margin-bottom: 0.3rem;
+            font-weight: 800;
         }
 
         .menu-header p {
-            font-size: 0.9rem;
-            opacity: 0.9;
+            font-size: 0.95rem;
+            opacity: 0.95;
         }
 
         .menu-close {
@@ -270,20 +382,21 @@
             background: rgba(255, 255, 255, 0.2);
             border: none;
             color: white;
-            width: 35px;
-            height: 35px;
-            border-radius: 8px;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
             cursor: pointer;
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all 0.3s ease;
+            font-weight: bold;
         }
 
         .menu-close:hover {
             background: rgba(255, 255, 255, 0.3);
-            transform: rotate(90deg);
+            transform: rotate(90deg) scale(1.1);
         }
 
         .menu-items {
@@ -292,7 +405,7 @@
 
         .menu-item-btn {
             width: 100%;
-            padding: 1rem 1.5rem;
+            padding: 1.2rem 1.5rem;
             border: none;
             background: transparent;
             text-align: left;
@@ -302,17 +415,40 @@
             cursor: pointer;
             transition: all 0.3s ease;
             color: #333;
-            font-size: 0.95rem;
-            font-weight: 500;
+            font-size: 1rem;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .menu-item-btn::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .menu-item-btn:hover::before {
+            transform: scaleY(1);
         }
 
         .menu-item-btn:hover {
-            background: rgba(102, 126, 234, 0.1);
+            background: rgba(0, 184, 148, 0.08);
             padding-left: 2rem;
         }
 
         .menu-item-btn .icon {
-            font-size: 1.3rem;
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .menu-item-btn:hover .icon {
+            transform: scale(1.2) rotate(10deg);
         }
 
         .menu-divider {
@@ -320,6 +456,20 @@
             background: rgba(0, 0, 0, 0.1);
             margin: 0.5rem 1.5rem;
         }
+
+        /* Staggered animation for menu items */
+        .hamburger-menu.active .menu-item-btn {
+            animation: menuItemSlide 0.4s ease forwards;
+        }
+
+        .hamburger-menu.active .menu-item-btn:nth-child(1) { animation-delay: 0.05s; }
+        .hamburger-menu.active .menu-item-btn:nth-child(2) { animation-delay: 0.1s; }
+        .hamburger-menu.active .menu-item-btn:nth-child(3) { animation-delay: 0.15s; }
+        .hamburger-menu.active .menu-item-btn:nth-child(4) { animation-delay: 0.2s; }
+        .hamburger-menu.active .menu-item-btn:nth-child(5) { animation-delay: 0.25s; }
+        .hamburger-menu.active .menu-item-btn:nth-child(6) { animation-delay: 0.3s; }
+        .hamburger-menu.active .menu-item-btn:nth-child(7) { animation-delay: 0.35s; }
+        .hamburger-menu.active .menu-item-btn:nth-child(8) { animation-delay: 0.4s; }
 
         /* ===== PWA INSTALL BANNER ===== */
         .install-banner {
@@ -329,7 +479,7 @@
             transform: translateX(-50%);
             width: 90%;
             max-width: 500px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
             color: white;
             padding: 1.2rem 1.5rem;
             border-radius: 20px;
@@ -380,7 +530,7 @@
 
         .install-btn {
             background: white;
-            color: #667eea;
+            color: #00b894;
         }
 
         .install-btn:hover {
@@ -697,7 +847,7 @@
             justify-content: center;
             align-items: center;
             z-index: 100;
-            animation: fadeIn 0.3s ease;
+            animation: fadeInUp 0.3s ease;
             padding: 1rem;
         }
 
@@ -716,7 +866,7 @@
             padding: 0;
             position: relative;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            animation: slideUp 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            animation: slideInRight 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
             border: 2px solid rgba(255, 255, 255, 0.5);
         }
 
@@ -739,7 +889,7 @@
         }
 
         .close-btn {
-            background: rgba(255, 255, 255, 0.2);
+                      background: rgba(255, 255, 255, 0.2);
             border: none;
             font-size: 1.8rem;
             font-weight: bold;
@@ -761,6 +911,73 @@
 
         #toolContainer {
             padding: 2rem;
+        }
+
+        /* ===== INFO BOX FOR MODALS ===== */
+        .info-box {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, rgba(0, 184, 148, 0.1) 0%, rgba(0, 206, 201, 0.1) 100%);
+            border-radius: 15px;
+            margin-bottom: 1rem;
+            border: 2px solid rgba(0, 184, 148, 0.3);
+        }
+
+        .info-box h3 {
+            color: #00b894;
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .info-box p, .info-box ul {
+            color: #333;
+            line-height: 1.8;
+            margin-bottom: 0.8rem;
+        }
+
+        .info-box ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .info-box ul li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .info-box ul li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #00b894;
+            font-weight: bold;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card h4 {
+            font-size: 2rem;
+            color: #00b894;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card p {
+            color: #666;
+            font-size: 0.9rem;
         }
 
         /* ===== SETTINGS MODAL ===== */
@@ -842,7 +1059,7 @@
             position: fixed;
             bottom: 20px;
             right: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
             color: white;
             padding: 1rem 1.5rem;
             border-radius: 15px;
@@ -900,10 +1117,26 @@
         }
 
         body.dark .menu-item-btn:hover {
-            background: rgba(102, 126, 234, 0.2);
+            background: rgba(0, 184, 148, 0.2);
         }
 
-        /* Image Editor & Tool Styles (keeping existing) */
+        body.dark .info-box {
+            background: rgba(0, 184, 148, 0.2);
+        }
+
+        body.dark .info-box p, body.dark .info-box ul {
+            color: #eee;
+        }
+
+        body.dark .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        body.dark .stat-card p {
+            color: #ccc;
+        }
+
+        /* Image Editor & Tool Styles */
         .upload-section {
             text-align: center;
             padding: 2.5rem 1.5rem;
@@ -1229,6 +1462,10 @@
                 width: 60px;
                 height: 60px;
             }
+
+            .stat-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         @media (min-width: 768px) {
@@ -1267,6 +1504,14 @@
     </style>
 </head>
 <body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <img src="1768555699242.jpg" alt="HAQ Utility" class="loading-logo" />
+        <h1 class="loading-title">HAQ Utility</h1>
+        <p class="loading-subtitle">Loading your productivity tools...</p>
+        <div class="loading-spinner"></div>
+    </div>
+
     <!-- Animated Background Particles -->
     <div class="particles" id="particles"></div>
 
@@ -1288,12 +1533,21 @@
     <!-- Menu Overlay -->
     <div class="menu-overlay" id="menuOverlay"></div>
 
-    <!-- Hamburger Menu -->
+    <!-- Hamburger Menu Button - TOP LEFT -->
+    <button class="header-controls hamburger-btn" id="hamburgerBtn">
+        <div class="hamburger-icon">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </button>
+
+    <!-- Hamburger Menu Panel -->
     <div class="hamburger-menu" id="hamburgerMenu">
         <div class="menu-header">
             <button class="menu-close" id="menuClose">×</button>
-            <h2>Menu</h2>
-            <p>HAQ Utility v2.0</p>
+            <h2>HAQ Utility</h2>
+            <p>All-in-One Toolkit v2.0</p>
         </div>
         <div class="menu-items">
             <button class="menu-item-btn" id="menuAbout">
@@ -1347,13 +1601,6 @@
     </div>
 
     <header>
-        <button class="header-controls hamburger-btn" id="hamburgerBtn">
-            <div class="hamburger-icon">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-        </button>
         <h1>HAQ Utility</h1>
         <p class="subtitle">All-in-One Handy Tools by Abdulhaq</p>
         <div class="header-controls">
@@ -1371,7 +1618,7 @@
         <nav class="menu-bar">
             <button class="menu-item active" data-category="all">
                 All Tools
-                <span class="badge" id="badgeAll">20</span>
+                <span class="badge" id="badgeAll">19</span>
             </button>
             <button class="menu-item" data-category="favorites">
                 ⭐ Favorites
@@ -1489,7 +1736,8 @@
                 <button class="open-tool-btn">Open Tool</button>
             </div>
 
-            <div class="tool-card" data-tool="wordCounter" data-category="text">
+            <div class="tool-card"
+ data-tool="wordCounter" data-category="text">
                 <button class="favorite-btn" data-fav="wordCounter">☆</button>
                 <img src="wc.jpg" alt="Word Counter" />
                 <h2>Word Counter</h2>
@@ -1605,9 +1853,9 @@
                     <div class="setting-item" style="flex-direction:column; align-items:flex-start;">
                         <div>
                             <h3>About HAQ Utility</h3>
-                            <p style="margin-top:0.5rem;">Version: 2.0 Ultra</p>
+                            <p style="margin-top:0.5rem;">Version: 2.0 Ultra PWA</p>
                             <p>Created by: Abdulhaq Abdul Ganiy</p>
-                            <p>Total Tools: <span id="settingsToolCount">20</span></p>
+                            <p>Total Tools: <span id="settingsToolCount">19</span></p>
                         </div>
                     </div>
                 </div>
@@ -1616,10 +1864,114 @@
     </div>
 
     <footer>
-        <p>© 2025 HAQ Utility by Abdulhaq Abdul Ganiy | <span id="toolCount">20</span> Tools Available</p>
+        <p>© 2025 HAQ Utility by Abdulhaq Abdul Ganiy | <span id="toolCount">19</span> Tools Available</p>
     </footer>
 
     <script>
+        // ===== INLINE PWA MANIFEST =====
+        (function() {
+            const manifestData = {
+                "name": "HAQ Utility - All-in-One Tools",
+                "short_name": "Haqtools",
+                "description": "Professional productivity toolkit with 19+ tools for everyday tasks",
+                "start_url": "./",
+                "display": "standalone",
+                "background_color": "#667eea",
+                "theme_color": "#667eea",
+                "orientation": "portrait-primary",
+                "icons": [
+                    {
+                        "src": "1768555457995.jpg",
+                        "sizes": "192x192",
+                        "type": "image/jpeg",
+                        "purpose": "any maskable"
+                    },
+                    {
+                        "src": "1768555699242.jpg",
+                        "sizes": "512x512",
+                        "type": "image/jpeg",
+                        "purpose": "any maskable"
+                    }
+                ]
+            };
+            const stringManifest = JSON.stringify(manifestData);
+            const blob = new Blob([stringManifest], {type: 'application/json'});
+            const manifestURL = URL.createObjectURL(blob);
+            document.getElementById('app-manifest').setAttribute('href', manifestURL);
+        })();
+
+        // ===== INLINE SERVICE WORKER =====
+        (function() {
+            if ('serviceWorker' in navigator) {
+                const swCode = `
+                    const CACHE_NAME = 'haq-utility-v2.0';
+                    const urlsToCache = [
+                        './',
+                        './1768555457995.jpg',
+                        './1768555699242.jpg'
+                    ];
+
+                    self.addEventListener('install', (event) => {
+                        event.waitUntil(
+                            caches.open(CACHE_NAME)
+                                .then((cache) => {
+                                    console.log('HAQ Utility: Cache opened');
+                                    return cache.addAll(urlsToCache);
+                                })
+                        );
+                        self.skipWaiting();
+                    });
+
+                    self.addEventListener('fetch', (event) => {
+                        event.respondWith(
+                            caches.match(event.request)
+                                .then((response) => {
+                                    if (response) {
+                                        return response;
+                                    }
+                                    return fetch(event.request);
+                                })
+                        );
+                    });
+
+                    self.addEventListener('activate', (event) => {
+                        event.waitUntil(
+                            caches.keys().then((cacheNames) => {
+                                return Promise.all(
+                                    cacheNames.map((cacheName) => {
+                                        if (cacheName !== CACHE_NAME) {
+                                            return caches.delete(cacheName);
+                                        }
+                                    })
+                                );
+                            })
+                        );
+                        return self.clients.claim();
+                    });
+                `;
+                const blob = new Blob([swCode], { type: 'application/javascript' });
+                const swURL = URL.createObjectURL(blob);
+                navigator.serviceWorker.register(swURL)
+                    .then((registration) => {
+                        console.log('HAQ Utility PWA: Service Worker registered successfully:', registration.scope);
+                    })
+                    .catch((error) => {
+                        console.log('HAQ Utility PWA: Service Worker registration failed:', error);
+                    });
+            }
+        })();
+
+        // ===== LOADING SCREEN =====
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const loadingScreen = document.getElementById('loadingScreen');
+                loadingScreen.classList.add('hide');
+                setTimeout(() => {
+                    loadingScreen.style.display = 'none';
+                }, 500);
+            }, 2000);
+        });
+
         // ===== PARTICLES ANIMATION =====
         function createParticles() {
             const container = document.getElementById('particles');
@@ -1645,7 +1997,6 @@
             e.preventDefault();
             deferredPrompt = e;
             
-            // Check if user dismissed before
             if (!localStorage.getItem('installDismissed')) {
                 setTimeout(() => {
                     installBanner.classList.add('show');
@@ -1685,82 +2036,277 @@
         function openMenu() {
             hamburgerMenu.classList.add('active');
             menuOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
         }
 
         function closeMenu() {
             hamburgerMenu.classList.remove('active');
             menuOverlay.classList.remove('active');
+            document.body.style.overflow = '';
         }
 
         hamburgerBtn.addEventListener('click', openMenu);
         menuClose.addEventListener('click', closeMenu);
         menuOverlay.addEventListener('click', closeMenu);
 
-        // Menu item handlers
+        // ===== ENHANCED MENU ITEM HANDLERS =====
+        
+        // About
         document.getElementById('menuAbout').addEventListener('click', () => {
             closeMenu();
-            showToast('HAQ Utility v2.0 Ultra - Your All-in-One Toolkit!');
+            const modal = document.getElementById('toolModal');
+            const container = document.getElementById('toolContainer');
+            document.getElementById('modalTitle').textContent = 'ℹ️ About HAQ Utility';
+            
+            container.innerHTML = `
+                <div class="info-box">
+                    <h3>🚀 Welcome to HAQ Utility v2.0 Ultra</h3>
+                    <p><strong>Your all-in-one productivity powerhouse!</strong></p>
+                    <p>HAQ Utility is a comprehensive web application designed to streamline your daily tasks with professional-grade tools right in your browser.</p>
+                </div>
+
+                <div class="info-box">
+                    <h3>✨ Key Features</h3>
+                    <ul>
+                        <li>19+ Professional Tools across 5 categories</li>
+                        <li>Works completely offline as a PWA</li>
+                        <li>Beautiful dark mode support</li>
+                        <li>Responsive design for all devices</li>
+                        <li>No data collection - 100% privacy</li>
+                        <li>Lightning-fast performance</li>
+                        <li>Regular updates and new tools</li>
+                    </ul>
+                </div>
+
+                <div class="info-box">
+                    <h3>🛠️ Tool Categories</h3>
+                    <ul>
+                        <li><strong>Generators:</strong> Passwords, UUIDs, QR Codes, Colors, Lorem Ipsum</li>
+                        <li><strong>Calculators:</strong> Basic, Age, BMI, Tip</li>
+                        <li><strong>Converters:</strong> Units, Colors, Base64</li>
+                        <li><strong>Text Tools:</strong> Word Counter, Case Converter, JSON Formatter</li>
+                        <li><strong>Utilities:</strong> Notepad, Pomodoro Timer, Stopwatch, Image Editor</li>
+                    </ul>
+                </div>
+
+                <div class="info-box">
+                    <h3>👨‍💻 Created By</h3>
+                    <p><strong>Abdulhaq Abdul Ganiy</strong></p>
+                    <p>Passionate developer crafting useful tools for everyday productivity.</p>
+                    <p style="margin-top: 1rem;"><em>"Built with ❤️ and lots of ☕"</em></p>
+                </div>
+
+                <div class="info-box">
+                    <h3>📜 Version Information</h3>
+                    <p><strong>Version:</strong> 2.0 Ultra PWA Edition</p>
+                    <p><strong>Release Date:</strong> January 2025</p>
+                    <p><strong>License:</strong> Free & Open Source</p>
+                    <p><strong>Platform:</strong> Progressive Web App</p>
+                </div>
+            `;
+            
+            modal.classList.remove('hidden');
         });
 
+        // Share
         document.getElementById('menuShare').addEventListener('click', async () => {
             closeMenu();
             if (navigator.share) {
                 try {
                     await navigator.share({
-                        title: 'HAQ Utility',
-                        text: 'Check out this amazing all-in-one utility app!',
+                        title: 'HAQ Utility - All-in-One Tools',
+                        text: 'Check out this amazing productivity toolkit with 19+ professional tools! 🚀',
                         url: window.location.href
                     });
+                    showToast('Thanks for sharing! 💙');
                 } catch (err) {
-                    console.log('Share cancelled');
+                    if (err.name !== 'AbortError') {
+                        console.log('Share cancelled');
+                    }
                 }
             } else {
                 navigator.clipboard.writeText(window.location.href);
-                showToast('Link copied to clipboard!');
+                showToast('Link copied to clipboard! 📋');
             }
         });
 
+        // Keyboard Shortcuts
         document.getElementById('menuKeyboard').addEventListener('click', () => {
             closeMenu();
-            alert('Keyboard Shortcuts:\n\nCtrl+K - Search\nEsc - Close Modal\nCtrl+1-9 - Quick Launch Tools');
+            const modal = document.getElementById('toolModal');
+            const container = document.getElementById('toolContainer');
+            document.getElementById('modalTitle').textContent = '⌨️ Keyboard Shortcuts';
+            
+            container.innerHTML = `
+                <div class="info-box">
+                    <h3>⚡ Quick Actions</h3>
+                    <ul>
+                        <li><strong>Ctrl/Cmd + K</strong> - Focus search box</li>
+                        <li><strong>Esc</strong> - Close any modal or menu</li>
+                        <li><strong>Ctrl/Cmd + 1-9</strong> - Quick launch tools (coming soon)</li>
+                        <li><strong>Alt + S</strong> - Open settings</li>
+                        <li><strong>Alt + M</strong> - Toggle hamburger menu</li>
+                    </ul>
+                </div>
+
+                <div class="info-box">
+                    <h3>🎯 Navigation Tips</h3>
+                    <ul>
+                        <li>Use Tab to navigate between elements</li>
+                        <li>Enter to select/activate buttons</li>
+                        <li>Arrow keys to scroll through lists</li>
+                        <li>Search is instant - just start typing!</li>
+                    </ul>
+                </div>
+
+                <div class="info-box">
+                    <h3>💡 Pro Tips</h3>
+                    <ul>
+                        <li>Favorite your most-used tools for quick access</li>
+                        <li>Recent tools appear automatically</li>
+                        <li>Install as PWA for offline access</li>
+                        <li>Dark mode saves battery on OLED screens</li>
+                        <li>Use keyboard shortcuts for lightning-fast workflow</li>
+                    </ul>
+                </div>
+            `;
+            
+            modal.classList.remove('hidden');
         });
 
+        // Theme Toggle
         document.getElementById('menuTheme').addEventListener('click', () => {
             closeMenu();
             document.getElementById('darkModeToggle').click();
         });
 
+        // Statistics
         document.getElementById('menuStats').addEventListener('click', () => {
             closeMenu();
+            const modal = document.getElementById('toolModal');
+            const container = document.getElementById('toolContainer');
+            document.getElementById('modalTitle').textContent = '📊 Usage Statistics';
+            
             const totalUses = parseInt(localStorage.getItem('totalToolUses') || '0');
-            const mostUsed = localStorage.getItem('mostUsedTool') || 'None';
-            showToast(`Total Uses: ${totalUses} | Most Used: ${mostUsed}`);
+            const mostUsed = localStorage.getItem('mostUsedTool') || 'None yet';
+            const favorites = JSON.parse(localStorage.getItem('haqFavorites') || '[]');
+            const recentlyUsed = JSON.parse(localStorage.getItem('haqRecent') || '[]');
+            const pomodoroSessions = parseInt(localStorage.getItem('pomodoroSessions') || '0');
+            const installDate = localStorage.getItem('firstVisit') || new Date().toLocaleDateString();
+            
+            if (!localStorage.getItem('firstVisit')) {
+                localStorage.setItem('firstVisit', new Date().toLocaleDateString());
+            }
+            
+            container.innerHTML = `
+                <div class="info-box">
+                    <h3>📈 Your Usage Overview</h3>
+                    <div class="stat-grid">
+                        <div class="stat-card">
+                            <h4>${totalUses}</h4>
+                            <p>Total Tool Uses</p>
+                        </div>
+                        <div class="stat-card">
+                            <h4>${favorites.length}</h4>
+                            <p>Favorited Tools</p>
+                        </div>
+                        <div class="stat-card">
+                            <h4>${recentlyUsed.length}</h4>
+                            <p>Recent Tools</p>
+                        </div>
+                        <div class="stat-card">
+                            <h4>${pomodoroSessions}</h4>
+                            <p>Pomodoro Sessions</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <h3>🏆 Activity Details</h3>
+                    <ul>
+                        <li><strong>Most Used Tool:</strong> ${mostUsed}</li>
+                        <li><strong>First Visit:</strong> ${installDate}</li>
+                        <li><strong>Average Daily Use:</strong> ${Math.ceil(totalUses / 7)} tools</li>
+                        <li><strong>Productivity Score:</strong> ${totalUses > 50 ? '🔥 Master' : totalUses > 20 ? '⭐ Expert' : totalUses > 5 ? '👍 Active' : '🌱 Beginner'}</li>
+                    </ul>
+                </div>
+
+                <div class="info-box">
+                    <h3>💪 Keep Going!</h3>
+                    <p>You're doing great! Every tool use makes you more productive.</p>
+                    <p style="margin-top: 1rem;"><em>Tip: Try favoriting your most-used tools for even faster access!</em></p>
+                </div>
+            `;
+            
+            modal.classList.remove('hidden');
         });
 
+        // Achievements
         document.getElementById('menuAchievements').addEventListener('click', () => {
             closeMenu();
+            const modal = document.getElementById('toolModal');
+            const container = document.getElementById('toolContainer');
+            document.getElementById('modalTitle').textContent = '🏆 Achievements';
+            
             const achievements = checkAchievements();
-            alert(`🏆 Achievements\n\n${achievements.join('\n')}`);
+            const totalUses = parseInt(localStorage.getItem('totalToolUses') || '0');
+            const favorites = JSON.parse(localStorage.getItem('haqFavorites') || '[]');
+            
+            container.innerHTML = `
+                <div class="info-box">
+                    <h3>🎖️ Your Achievements</h3>
+                    ${achievements.map(achievement => `<p>${achievement}</p>`).join('')}
+                </div>
+
+                <div class="info-box">
+                    <h3>🔒 Locked Achievements</h3>
+                    <ul>
+                        ${totalUses < 10 ? '<li>🔒 Novice - Use 10 tools</li>' : ''}
+                        ${totalUses < 50 ? '<li>🔒 Power User - Use 50 tools</li>' : ''}
+                        ${totalUses < 100 ? '<li>🔒 Master - Use 100 tools</li>' : ''}
+                        ${favorites.length < 5 ? '<li>🔒 Favorite Hunter - Favorite 5+ tools</li>' : ''}
+                        ${!localStorage.getItem('haqUtilityDarkMode') ? '<li>🔒 Night Owl - Enable dark mode</li>' : ''}
+                        ${parseInt(localStorage.getItem('pomodoroSessions') || '0') < 10 ? '<li>🔒 Focused Mind - Complete 10 Pomodoro sessions</li>' : ''}
+                    </ul>
+                </div>
+
+                <div class="info-box">
+                    <h3>🌟 Progress</h3>
+                    <p>Unlocked: <strong>${achievements.filter(a => a.startsWith('✅')).length}</strong> / 6 achievements</p>
+                    <p style="margin-top: 1rem;"><em>Keep using HAQ Utility to unlock more!</em></p>
+                </div>
+            `;
+            
+            modal.classList.remove('hidden');
         });
 
+        // Export Settings
         document.getElementById('menuExport').addEventListener('click', () => {
             closeMenu();
             const data = {
                 favorites: localStorage.getItem('haqFavorites'),
                 recent: localStorage.getItem('haqRecent'),
                 darkMode: localStorage.getItem('haqUtilityDarkMode'),
-                notes: localStorage.getItem('haqutility_notes')
+                notes: localStorage.getItem('haqutility_notes'),
+                stats: {
+                    totalUses: localStorage.getItem('totalToolUses'),
+                    mostUsed: localStorage.getItem('mostUsedTool'),
+                    pomodoroSessions: localStorage.getItem('pomodoroSessions'),
+                    firstVisit: localStorage.getItem('firstVisit')
+                },
+                exportDate: new Date().toISOString()
             };
-            const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'haq-utility-backup.json';
+            a.download = 'haq-utility-backup-' + new Date().toISOString().slice(0,10) + '.json';
             a.click();
             URL.revokeObjectURL(url);
-            showToast('Settings exported! 💾');
+            showToast('Settings exported successfully! 💾');
         });
 
+        // Import Settings
         document.getElementById('menuImport').addEventListener('click', () => {
             closeMenu();
             const input = document.createElement('input');
@@ -1772,13 +2318,20 @@
                 reader.onload = (event) => {
                     try {
                         const data = JSON.parse(event.target.result);
-                        Object.keys(data).forEach(key => {
-                            if (data[key]) localStorage.setItem(key === 'favorites' ? 'haqFavorites' : key === 'recent' ? 'haqRecent' : key === 'darkMode' ? 'haqUtilityDarkMode' : 'haqutility_notes', data[key]);
-                        });
-                        showToast('Settings imported! Refreshing...');
-                        setTimeout(() => location.reload(), 1000);
+                        if (data.favorites) localStorage.setItem('haqFavorites', data.favorites);
+                        if (data.recent) localStorage.setItem('haqRecent', data.recent);
+                        if (data.darkMode) localStorage.setItem('haqUtilityDarkMode', data.darkMode);
+                        if (data.notes) localStorage.setItem('haqutility_notes', data.notes);
+                        if (data.stats) {
+                            if (data.stats.totalUses) localStorage.setItem('totalToolUses', data.stats.totalUses);
+                            if (data.stats.mostUsed) localStorage.setItem('mostUsedTool', data.stats.mostUsed);
+                            if (data.stats.pomodoroSessions) localStorage.setItem('pomodoroSessions', data.stats.pomodoroSessions);
+                            if (data.stats.firstVisit) localStorage.setItem('firstVisit', data.stats.firstVisit);
+                        }
+                        showToast('Settings imported! Refreshing page...');
+                        setTimeout(() => location.reload(), 1500);
                     } catch (err) {
-                        showToast('Invalid backup file!');
+                        showToast('Invalid backup file! ❌');
                     }
                 };
                 reader.readAsText(file);
@@ -1786,22 +2339,148 @@
             input.click();
         });
 
+        // Help & Tutorial
         document.getElementById('menuHelp').addEventListener('click', () => {
             closeMenu();
-            alert('HAQ Utility Help\n\n1. Browse or search for tools\n2. Click to open any tool\n3. Star your favorites\n4. Use keyboard shortcuts for faster access\n\nFor more help, contact the developer!');
+            const modal = document.getElementById('toolModal');
+            const container = document.getElementById('toolContainer');
+            document.getElementById('modalTitle').textContent = '❓ Help & Tutorial';
+            
+            container.innerHTML = `
+                <div class="info-box">
+                    <h3>🎯 Getting Started</h3>
+                    <ul>
+                        <li><strong>Step 1:</strong> Browse tools by category or use the search bar</li>
+                        <li><strong>Step 2:</strong> Click "Open Tool" on any card to launch it</li>
+                        <li><strong>Step 3:</strong> Star your favorites for quick access</li>
+                        <li><strong>Step 4:</strong> Install as PWA for offline use (click install banner)</li>
+                    </ul>
+                </div>
+
+                <div class="info-box">
+                    <h3>🔍 Finding Tools</h3>
+                    <ul>
+                        <li>Use the <strong>search bar</strong> to find tools by name</li>
+                        <li>Click <strong>category buttons</strong> to filter by type</li>
+                        <li>Check <strong>Recent</strong> for your last-used tools</li>
+                        <li>View <strong>Favorites</strong> for starred tools</li>
+                    </ul>
+                </div>
+
+                <div class="info-box">
+                    <h3>⚙️ Customization</h3>
+                    <ul>
+                        <li>Toggle <strong>dark mode</strong> for comfortable viewing</li>
+                        <li>Export/import your <strong>settings & data</strong></li>
+                        <li>Clear data anytime from <strong>Settings</strong></li>
+                        <li>View your <strong>statistics</strong> from the menu</li>
+                    </ul>
+                </div>
+
+                <div class="info-box">
+                    <h3>🚀 Pro Tips</h3>
+                    <ul>
+                        <li>Install as PWA for faster loading and offline access</li>
+                        <li>Use keyboard shortcuts (Ctrl+K for search)</li>
+                        <li>Notes auto-save every 30 seconds</li>
+                        <li>All data stays private - nothing sent to servers</li>
+                    </ul>
+                </div>
+
+                <div class="info-box">
+                    <h3>❓ Need More Help?</h3>
+                    <p>If you encounter any issues or have questions, use the "Send Feedback" option in the menu.</p>
+                    <p style="margin-top: 1rem;"><em>Happy productivity! 🎉</em></p>
+                </div>
+            `;
+            
+            modal.classList.remove('hidden');
         });
 
+        // Send Feedback
         document.getElementById('menuFeedback').addEventListener('click', () => {
             closeMenu();
-            const feedback = prompt('Send us your feedback:');
-            if (feedback) {
+            const feedback = prompt('📬 Send us your feedback or suggestions:\n\n(We read every message!)');
+            if (feedback && feedback.trim()) {
+                localStorage.setItem('lastFeedback', JSON.stringify({
+                    message: feedback,
+                    date: new Date().toISOString()
+                }));
                 showToast('Thank you for your feedback! 💙');
+                createConfetti();
             }
         });
 
+        // Developer Info
         document.getElementById('menuDeveloper').addEventListener('click', () => {
             closeMenu();
-            alert('👨‍💻 Developer Info\n\nCreated by: Abdulhaq Abdul Ganiy\nVersion: 2.0 Ultra\nBuilt with: ❤️ and ☕');
+            const modal = document.getElementById('toolModal');
+            const container = document.getElementById('toolContainer');
+            document.getElementById('modalTitle').textContent = '👨‍💻 Developer Info';
+            
+            container.innerHTML = `
+                <div class="info-box">
+                    <h3>👋 Meet the Creator</h3>
+                    <p><strong>Abdulhaq Abdul Ganiy</strong></p>
+                    <p>Passionate full-stack developer with a love for creating useful, beautiful tools that make people's lives easier.</p>
+                </div>
+
+                <div class="info-box">
+                    <h3>🛠️ Tech Stack</h3>
+                    <ul>
+                        <li><strong>Frontend:</strong> Vanilla JavaScript (ES6+)</li>
+                        <li><strong>Styling:</strong> Pure CSS3 with animations</li>
+                        <li><strong>Architecture:</strong> Progressive Web App (PWA)</li>
+                        <li><strong>Storage:</strong> LocalStorage API</li>
+                        <li><strong>No frameworks</strong> - Pure, lightweight code</li>
+                    </ul>
+                </div>
+
+                <div class="info-box">
+                    <h3>💡 Philosophy</h3>
+                    <p><em>"Great tools should be simple, fast, and accessible to everyone."</em></p>
+                    <p style="margin-top: 1rem;">HAQ Utility embodies this philosophy by being:</p>
+                    <ul>
+                        <li>100% free and open source</li>
+                        <li>Privacy-focused (no tracking)</li>
+                        <li>Lightweight and fast</li>
+                        <li>Works offline</li>
+                        <li>Beautiful and intuitive</li>
+                    </ul>
+                </div>
+
+                <div class="info-box">
+                    <h3>📊 Project Stats</h3>
+                    <ul>
+                        <li><strong>Version:</strong> 2.0 Ultra PWA</li>
+                        <li><strong>Release:</strong> January 2025</li>
+                        <li><strong>Total Tools:</strong> 19+</li>
+                        <li><strong>Code Lines:</strong> 3000+</li>
+                        <li><strong>File Size:</strong> Single HTML file</li>
+                        <li><strong>Dependencies:</strong> Zero! 🎉</li>
+                    </ul>
+                </div>
+
+                <div class="info-box">
+                    <h3>🚀 Future Plans</h3>
+                    <ul>
+                        <li>More tools (targeting 30+ total)</li>
+                        <li>Cloud sync option</li>
+                        <li>Collaborative features</li>
+                        <li>Mobile app versions</li>
+                        <li>Custom tool builder</li>
+                    </ul>
+                </div>
+
+                <div class="info-box">
+                    <h3>❤️ Credits & Thanks</h3>
+                    <p>Built with love, coffee ☕, and countless hours of coding.</p>
+                    <p style="margin-top: 1rem;">Special thanks to everyone using and supporting this project!</p>
+                    <p style="margin-top: 1rem; text-align: center;"><strong>© 2025 Abdulhaq Abdul Ganiy</strong></p>
+                </div>
+            `;
+            
+            modal.classList.remove('hidden');
         });
 
         // ===== CONFETTI EFFECT =====
@@ -1824,12 +2503,14 @@
             const achievements = [];
             const totalUses = parseInt(localStorage.getItem('totalToolUses') || '0');
             const favorites = JSON.parse(localStorage.getItem('haqFavorites') || '[]');
+            const pomodoroSessions = parseInt(localStorage.getItem('pomodoroSessions') || '0');
             
             if (totalUses >= 10) achievements.push('✅ Novice - Used 10 tools');
             if (totalUses >= 50) achievements.push('✅ Power User - Used 50 tools');
             if (totalUses >= 100) achievements.push('✅ Master - Used 100 tools');
             if (favorites.length >= 5) achievements.push('✅ Favorite Hunter - 5+ favorites');
             if (localStorage.getItem('haqUtilityDarkMode') === 'true') achievements.push('✅ Night Owl - Using dark mode');
+            if (pomodoroSessions >= 10) achievements.push('✅ Focused Mind - 10+ Pomodoro sessions');
             
             if (achievements.length === 0) achievements.push('🔒 Keep using the app to unlock achievements!');
             
@@ -1842,15 +2523,13 @@
             localStorage.setItem('totalToolUses', totalUses);
             localStorage.setItem('mostUsedTool', toolName);
             
-            // Check for achievements
             if (totalUses === 10 || totalUses === 50 || totalUses === 100) {
                 createConfetti();
                 showToast(`🏆 Achievement Unlocked! Check the menu.`);
             }
         }
 
-   
-               // ===== TOOLS CONFIGURATION ===== 
+        // ===== TOOLS CONFIGURATION ===== 
         const tools = {
             passwordGenerator: {
                 render: (container) => {
@@ -1908,7 +2587,7 @@
                         }
                     });
 
-                    generatePassword(); // Auto-generate on open
+                    generatePassword();
                 }
             },
 
@@ -1949,7 +2628,7 @@
                         }
                     });
 
-                    generateBtn.click(); // Auto-generate
+                    generateBtn.click();
                 }
             },
 
@@ -1970,12 +2649,9 @@
                     const input = container.querySelector('#calcInput');
                     const buttons = container.querySelectorAll('.calc-buttons button');
                     
-                    // Safe calculation function (replaces eval)
                     function safeCalculate(expression) {
                         try {
-                            // Remove any non-numeric characters except operators
                             const sanitized = expression.replace(/[^0-9+\-*/.()]/g, '');
-                            // Use Function constructor (safer than eval)
                             return Function('"use strict"; return (' + sanitized + ')')();
                         } catch {
                             return 'Error';
@@ -2071,7 +2747,7 @@
 
                     calcBtn.addEventListener('click', () => {
                         const weight = parseFloat(weightInput.value);
-                        const height = parseFloat(heightInput.value) / 100; // Convert to meters
+                        const height = parseFloat(heightInput.value) / 100;
 
                         if (!weight || !height || weight <= 0 || height <= 0) {
                             showToast('Please enter valid weight and height');
@@ -2379,7 +3055,9 @@
                         <h2>🔐 Base64 Encoder/Decoder</h2>
                         <textarea id="inputText" placeholder="Enter text here" rows="4" style="width:100%; padding:0.8rem; margin-bottom:1rem;"></textarea>
                         <div style="display:flex; gap:0.5rem; margin-bottom:1rem;">
-                            <button id="encodeBtn" class="primary-btn" style="flex:1; padding:0.8rem;">Encode</button>
+                            <button id="encodeBtn" class="primary-btn" style="flex:1; padding:0.8rem;">
+                             Encode
+                             </button>
                             <button id="decodeBtn" class="primary-btn" style="flex:1; padding:0.8rem;">Decode</button>
                         </div>
                         <textarea id="outputText" readonly rows="4" style="width:100%; padding:0.8rem;"></textarea>
@@ -2435,7 +3113,7 @@
                         const charsNoSpaces = text.replace(/\s/g, '').length;
                         const sentences = text.split(/[.!?]+/).filter(s => s.trim()).length;
                         const paragraphs = text.split(/\n\n+/).filter(p => p.trim()).length;
-                        const readingTime = Math.ceil(words / 200); // Average reading speed
+                        const readingTime = Math.ceil(words / 200);
 
                         stats.innerHTML = `
                             <div><strong>Words:</strong> ${words}</div>
@@ -2607,21 +3285,18 @@
                     const charCount = container.querySelector('#charCount');
                     const saveTime = container.querySelector('#saveTime');
 
-                    // Load saved notes
                     notes.value = localStorage.getItem('haqutility_notes') || '';
                     const lastSaved = localStorage.getItem('haqutility_notes_time');
                     if (lastSaved) {
                         saveTime.textContent = 'Last saved: ' + new Date(parseInt(lastSaved)).toLocaleString();
                     }
 
-                    // Update character count
                     function updateCount() {
                         charCount.textContent = notes.value.length + ' characters';
                     }
                     notes.addEventListener('input', updateCount);
                     updateCount();
 
-                    // Auto-save every 30 seconds
                     let autoSaveTimer;
                     notes.addEventListener('input', () => {
                         clearTimeout(autoSaveTimer);
@@ -2757,7 +3432,6 @@
                         });
                     });
 
-                    // Request notification permission
                     if ('Notification' in window && Notification.permission === 'default') {
                         Notification.requestPermission();
                     }
@@ -2921,7 +3595,7 @@
                             colorDiv.style.background = color;
                             colorDiv.style.height = '120px';
                             colorDiv.style.borderRadius = '8px';
-                                                       colorDiv.style.display = 'flex';
+                            colorDiv.style.display = 'flex';
                             colorDiv.style.alignItems = 'flex-end';
                             colorDiv.style.justifyContent = 'center';
                             colorDiv.style.padding = '0.5rem';
@@ -2944,7 +3618,7 @@
                         showToast('All colors copied!');
                     });
 
-                    generatePalette(); // Auto-generate on open
+                    generatePalette();
                 }
             },
 
@@ -3001,7 +3675,7 @@
                             for (let i = 0; i < count; i++) {
                                 const paragraphLength = 5 + Math.floor(Math.random() * 5);
                                 let paragraph = '';
-                                for (let j = 0; j < paragraphLength; j++) {
+                                for(let j = 0; j < paragraphLength; j++) {
                                     const sentenceLength = 10 + Math.floor(Math.random() * 10);
                                     let sentence = '';
                                     for (let k = 0; k < sentenceLength; k++) {
@@ -3024,7 +3698,7 @@
                         }
                     });
 
-                    generate(); // Auto-generate
+                    generate();
                 }
             },
 
@@ -3033,21 +3707,17 @@
                     container.innerHTML = `
                         <h2>🖼️ Image Editor</h2>
                         
-                        <!-- Upload Section -->
                         <div class="upload-section" id="uploadSection">
                             <input type="file" id="imageUpload" accept="image/*" style="display:none;" />
                             <button id="uploadBtn" class="primary-btn" style="padding:1rem 2rem;">📁 Upload Image</button>
                             <p style="margin-top:0.5rem; color:#666;">or drag & drop</p>
                         </div>
 
-                        <!-- Editor Section (hidden initially) -->
                         <div id="editorSection" style="display:none;">
-                            <!-- Canvas -->
                             <div class="canvas-container">
                                 <canvas id="imageCanvas"></canvas>
                             </div>
 
-                            <!-- Tools Tabs -->
                             <div class="editor-tabs">
                                 <button class="tab-btn active" data-tab="basic">Basic</button>
                                 <button class="tab-btn" data-tab="filters">Filters</button>
@@ -3055,7 +3725,6 @@
                                 <button class="tab-btn" data-tab="draw">Draw</button>
                             </div>
 
-                            <!-- Basic Tools -->
                             <div class="tool-panel active" data-panel="basic">
                                 <button class="tool-btn" data-action="rotate-left">↶ Rotate Left</button>
                                 <button class="tool-btn" data-action="rotate-right">↷ Rotate Right</button>
@@ -3068,7 +3737,6 @@
                                 </div>
                             </div>
 
-                            <!-- Filters -->
                             <div class="tool-panel" data-panel="filters">
                                 <button class="tool-btn" data-filter="grayscale">⚪ Grayscale</button>
                                 <button class="tool-btn" data-filter="sepia">🟤 Sepia</button>
@@ -3076,7 +3744,6 @@
                                 <button class="tool-btn" data-filter="vintage">📷 Vintage</button>
                             </div>
 
-                            <!-- Adjustments -->
                             <div class="tool-panel" data-panel="adjust">
                                 <label>
                                     Brightness: <input type="range" id="brightness" min="-100" max="100" value="0" />
@@ -3089,7 +3756,6 @@
                                 <button class="tool-btn" data-action="apply-adjustments">✓ Apply</button>
                             </div>
 
-                            <!-- Draw Tools -->
                             <div class="tool-panel" data-panel="draw">
                                 <label>
                                     Pen Color: <input type="color" id="penColor" value="#ff0000" />
@@ -3103,7 +3769,6 @@
                                 <button class="tool-btn" data-action="clear-draw">🗑️ Clear Drawing</button>
                             </div>
 
-                            <!-- Action Buttons -->
                             <div class="action-buttons">
                                 <button id="resetBtn">↺ Reset</button>
                                 <button id="downloadBtn" class="primary-btn">💾 Download</button>
@@ -3481,7 +4146,6 @@
                 }
             }
         };
-        
 
         // ===== APP INITIALIZATION =====
         document.addEventListener('DOMContentLoaded', () => {
@@ -3502,7 +4166,6 @@
             let recentlyUsed = JSON.parse(localStorage.getItem('haqRecent') || '[]');
             let currentCategory = 'all';
 
-            // Update badge counts
             function updateBadges() {
                 document.getElementById('badgeAll').textContent = document.querySelectorAll('.tool-card').length;
                 document.getElementById('badgeFav').textContent = favorites.length;
@@ -3673,11 +4336,9 @@
                 }
             });
 
-            // Search with category reset
             toolSearch.addEventListener('input', () => {
                 const query = toolSearch.value.toLowerCase();
                 
-                // Clear search resets to "All Tools"
                 if (query === '') {
                     document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
                     document.querySelector('[data-category="all"]').classList.add('active');
@@ -3704,7 +4365,6 @@
 
             document.querySelectorAll('.menu-item').forEach(item => {
                 item.addEventListener('click', () => {
-                    // Clear search when changing categories
                     toolSearch.value = '';
                     
                     document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
@@ -3714,14 +4374,12 @@
                     currentCategory = category;
                     let visibleCount = 0;
 
-                    // Hide recent section when not on "all"
                     if (category !== 'all') {
                         recentSection.style.display = 'none';
                     } else {
                         updateRecentTools();
                     }
 
-                    // Smooth scroll to top
                     window.scrollTo({ top: 0, behavior: 'smooth' });
 
                     if (category === 'all') {
@@ -3773,8 +4431,8 @@
 
             if(localStorage.getItem('haqUtilityDarkMode') === 'true') {
                 document.body.classList.add('dark');
-                darkModeToggle.textContent = '☀️ Light Mode';
-            }
+                darkModeToggle.textContent = '☀️ Light Mode';   
+                }
 
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape') {
@@ -3785,11 +4443,28 @@
                     if (!settingsModal.classList.contains('hidden')) {
                         settingsModal.classList.add('hidden');
                     }
+                    if (hamburgerMenu.classList.contains('active')) {
+                        closeMenu();
+                    }
                 }
                 
                 if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
                     e.preventDefault();
                     toolSearch.focus();
+                }
+
+                if (e.altKey && e.key === 's') {
+                    e.preventDefault();
+                    settingsBtn.click();
+                }
+
+                if (e.altKey && e.key === 'm') {
+                    e.preventDefault();
+                    if (hamburgerMenu.classList.contains('active')) {
+                        closeMenu();
+                    } else {
+                        openMenu();
+                    }
                 }
             });
 
@@ -3811,12 +4486,6 @@
                 toast.remove();
             }, 3000);
         }
-
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('service-worker.js')
-                .then(() => console.log('HAQ Utility PWA registered'))
-                .catch(err => console.error('SW failed:', err));
-        }
     </script>
 </body>
-</html>
+</html> 
